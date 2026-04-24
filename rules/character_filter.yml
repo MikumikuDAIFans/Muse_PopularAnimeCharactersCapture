@@ -1,0 +1,7 @@
+non_character_tags:
+  - original
+  - character_request
+  - commentary_request
+  - artist_request
+  - cosplay
+  - no_humans

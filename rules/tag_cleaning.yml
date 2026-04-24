@@ -1,0 +1,5 @@
+tag_blacklist:
+  - commentary_request
+  - artist_request
+  - character_request
+  - tagme

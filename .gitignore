@@ -1,0 +1,53 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Local env and secrets
+.env
+*.local
+
+# Node / frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data and generated outputs
+output/
+backend/output/
+*.db
+*.sqlite
+*.sqlite3
+*.db-shm
+*.db-wal
+*.jsonl
+
+# Logs
+*.log
+logs/
+
+# Tool caches and local IDE files
+.playwright-mcp/
+.vscode/
+.idea/
+
+# OS files
+Thumbs.db
+Desktop.ini
+
+# Stray shell artifacts
+%SystemDrive%/
+-w
