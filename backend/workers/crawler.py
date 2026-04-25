@@ -78,6 +78,18 @@ class PostCrawlerWorker(BaseWorker):
             json.dump(payload, f, ensure_ascii=False, indent=2)
         os.replace(tmp, self.checkpoint_file)
 
+    def _load_checkpoint(self) -> Dict[str, Any]:
+        if not self.resume or not self.checkpoint_file.exists():
+            return {}
+        try:
+            with open(self.checkpoint_file, "r", encoding="utf-8") as f:
+                data = json.load(f)
+        except (OSError, json.JSONDecodeError):
+            return {}
+        if int(data.get("task_id") or 0) != self.task_id:
+            return {}
+        return data
+
     def _append_posts(self, posts: Iterable[DanbooruPost], seen: Set[int]) -> int:
         written = 0
         with open(self.output_file, "a", encoding="utf-8") as f:
@@ -99,7 +111,20 @@ class PostCrawlerWorker(BaseWorker):
         total = len(self.danbooru_ids)
         written = 0
         errors = 0
-        for idx, post_id in enumerate(self.danbooru_ids, 1):
+        checkpoint = self._load_checkpoint()
+        checkpoint_index = int(checkpoint.get("processed_count") or 0)
+        start_index = checkpoint_index if self.resume else 0
+        if start_index:
+            self.update_progress(
+                "crawler",
+                processed=start_index,
+                total=total,
+                status="running",
+                message=f"从 checkpoint 恢复，跳过已处理 ID 数 {start_index}",
+            )
+        last_idx = start_index
+        for idx, post_id in enumerate(self.danbooru_ids[start_index:], start_index + 1):
+            last_idx = idx
             if self._stop_event.is_set():
                 break
             if post_id in seen:
@@ -121,15 +146,26 @@ class PostCrawlerWorker(BaseWorker):
                 status="running",
                 message=f"已处理 ID {post_id}",
             )
-        return {"written": written, "errors": errors, "processed": min(total, len(self.danbooru_ids))}
+        return {"written": written, "errors": errors, "processed": min(total, last_idx)}
 
     def _crawl_search(self, seen: Set[int]) -> Dict[str, Any]:
         tags = self._all_search_tags()
-        cursor: Optional[int] = (self.end_id + 1) if self.end_id else None
+        checkpoint = self._load_checkpoint()
+        checkpoint_cursor = checkpoint.get("last_cursor")
+        cursor: Optional[int] = int(checkpoint_cursor) if checkpoint_cursor else ((self.end_id + 1) if self.end_id else None)
         written = 0
         errors = 0
-        processed_pages = 0
+        processed_pages = int(checkpoint.get("processed_pages") or 0) if checkpoint else 0
         max_items = self.limit or 0
+
+        if checkpoint_cursor:
+            self.update_progress(
+                "crawler",
+                processed=len(seen),
+                total=max_items or 0,
+                status="running",
+                message=f"从 checkpoint 恢复，last_cursor={checkpoint_cursor}",
+            )
 
         while not self._stop_event.is_set():
             page = f"b{cursor}" if cursor else None
