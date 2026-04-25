@@ -40,6 +40,32 @@ def _load_export_payload(path: Path):
         return None
 
 
+def _parse_export_datetime(value: str | None) -> datetime:
+    if not value:
+        return datetime.utcnow()
+    try:
+        return datetime.fromisoformat(value)
+    except Exception:
+        return datetime.utcnow()
+
+
+def _recent_export_path() -> Path:
+    return Path(get_settings().OUTPUT_ROOT) / "exports" / "character_list_recent_6m_top_200.json"
+
+
+def _recent_export_csv_path() -> Path:
+    return Path(get_settings().OUTPUT_ROOT) / "exports" / "character_list_recent_6m_top_200.csv"
+
+
+def _payload_matches_recent_filters(payload: dict, n: int, recent_months: int, min_count: int) -> bool:
+    filters = payload.get("filters", {})
+    return (
+        int(filters.get("top_n", n)) >= n
+        and int(filters.get("recent_months", recent_months)) == recent_months
+        and int(filters.get("min_post_count", min_count)) == min_count
+    )
+
+
 # ========== 项目管理 ==========
 
 @router.get("/projects", response_model=List[ProjectResponse], tags=["项目"])
@@ -511,6 +537,18 @@ async def get_top_characters(
     session: AsyncSession = Depends(get_db_session),
 ):
     """获取 Top N 角色榜单"""
+    payload = _load_export_payload(_recent_export_path())
+    if payload and _payload_matches_recent_filters(payload, n, recent_months, min_count):
+        characters = payload.get("characters", [])[:n]
+        filters = dict(payload.get("filters", {}))
+        filters["top_n"] = n
+        return CharacterExportResponse(
+            characters=characters,
+            generated_at=_parse_export_datetime(payload.get("generated_at")),
+            total_count=len(characters),
+            filters=filters,
+        )
+
     cutoff = datetime.utcnow() - timedelta(days=recent_months * 30)
 
     result = await session.execute(
@@ -612,6 +650,45 @@ async def export_characters(
     session: AsyncSession = Depends(get_db_session),
 ):
     """导出角色榜单"""
+    payload = _load_export_payload(_recent_export_path())
+    if payload and _payload_matches_recent_filters(payload, n, recent_months, min_count):
+        characters = payload.get("characters", [])[:n]
+        filters = dict(payload.get("filters", {}))
+        filters["top_n"] = n
+        if format == "csv":
+            import csv
+            import io
+            from fastapi.responses import StreamingResponse
+            fieldnames = [
+                "rank",
+                "character_tag",
+                "copyrights",
+                "post_count",
+                "recent_post_count",
+                "popularity_score",
+                "copyright_confidence",
+                "needs_review",
+                "notes",
+            ]
+            output = io.StringIO()
+            writer = csv.DictWriter(output, fieldnames=fieldnames)
+            writer.writeheader()
+            for item in characters:
+                row = {key: item.get(key) for key in fieldnames}
+                row["copyrights"] = "|".join(item.get("copyrights") or [])
+                writer.writerow(row)
+            return StreamingResponse(
+                iter([output.getvalue()]),
+                media_type="text/csv",
+                headers={"Content-Disposition": "attachment; filename=character_list_recent_6m_top_200.csv"},
+            )
+        return {
+            "characters": characters,
+            "generated_at": payload.get("generated_at") or datetime.utcnow().isoformat(),
+            "total_count": len(characters),
+            "filters": filters,
+        }
+
     # 复用 characters/top 逻辑
     result = await session.execute(
         select(Character)
