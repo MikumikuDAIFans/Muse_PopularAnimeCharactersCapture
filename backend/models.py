@@ -1,6 +1,6 @@
 """SQLAlchemy ORM 模型"""
 
-from datetime import datetime
+from datetime import date, datetime
 from typing import Optional
 
 from sqlalchemy import (
@@ -8,6 +8,7 @@ from sqlalchemy import (
     BigInteger,
     Boolean,
     CheckConstraint,
+    Date,
     DateTime,
     Float,
     ForeignKey,
@@ -152,6 +153,7 @@ class Post(Base):
         Index("ix_post_task_id", "task_id"),
         Index("ix_post_fetched_at", "fetched_at"),
         Index("ix_post_md5", "md5"),
+        Index("ix_post_created_at", "created_at"),
     )
 
 
@@ -247,6 +249,10 @@ class PostTag(Base):
     # 关联
     post: Mapped["Post"] = relationship("Post", back_populates="tags")
     tag: Mapped["Tag"] = relationship("Tag")
+
+    __table_args__ = (
+        Index("ix_post_tag_tag_id_post_id", "tag_id", "post_id"),
+    )
 
 
 # ========== 角色表 ==========
@@ -346,6 +352,268 @@ class TaskLog(Base):
     __table_args__ = (
         Index("ix_task_log_task_id", "task_id"),
         Index("ix_task_log_level", "level"),
+    )
+
+
+class SyncJob(Base):
+    """正式同步任务状态表。"""
+    __tablename__ = "sync_job"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    job_key: Mapped[str] = mapped_column(String(255), unique=True, nullable=False)
+    job_type: Mapped[str] = mapped_column(String(64), nullable=False, default="metadata")
+    status: Mapped[str] = mapped_column(
+        String(32),
+        CheckConstraint(
+            "status IN ('pending','running','completed','failed','cancelled')",
+            name="ck_sync_job_status",
+        ),
+        default="pending",
+    )
+    params: Mapped[dict] = mapped_column(JSON, default=dict)
+    total_shards: Mapped[int] = mapped_column(Integer, default=0)
+    completed_shards: Mapped[int] = mapped_column(Integer, default=0)
+    failed_shards: Mapped[int] = mapped_column(Integer, default=0)
+    started_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), default=None)
+    completed_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), default=None)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow
+    )
+
+    shards: Mapped[list["SyncShard"]] = relationship(
+        "SyncShard", back_populates="job", cascade="all, delete-orphan"
+    )
+    logs: Mapped[list["JobLog"]] = relationship(
+        "JobLog", back_populates="job", cascade="all, delete-orphan"
+    )
+
+    __table_args__ = (
+        Index("ix_sync_job_status", "status"),
+        Index("ix_sync_job_type", "job_type"),
+    )
+
+
+class SyncShard(Base):
+    """可恢复的同步分片状态表。"""
+    __tablename__ = "sync_shard"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    job_id: Mapped[int] = mapped_column(ForeignKey("sync_job.id"), nullable=False)
+    task_id: Mapped[Optional[int]] = mapped_column(Integer, default=None)
+    shard_key: Mapped[str] = mapped_column(String(255), nullable=False)
+    tag_filter: Mapped[Optional[str]] = mapped_column(Text, default=None)
+    output_path: Mapped[Optional[str]] = mapped_column(Text, default=None)
+    status: Mapped[str] = mapped_column(
+        String(32),
+        CheckConstraint(
+            "status IN ('pending','running','completed','failed','skipped')",
+            name="ck_sync_shard_status",
+        ),
+        default="pending",
+    )
+    line_count: Mapped[int] = mapped_column(Integer, default=0)
+    duplicate_count: Mapped[int] = mapped_column(Integer, default=0)
+    invalid_count: Mapped[int] = mapped_column(Integer, default=0)
+    error_count: Mapped[int] = mapped_column(Integer, default=0)
+    checkpoint: Mapped[dict] = mapped_column(JSON, default=dict)
+    started_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), default=None)
+    completed_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), default=None)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow
+    )
+
+    job: Mapped["SyncJob"] = relationship("SyncJob", back_populates="shards")
+
+    __table_args__ = (
+        UniqueConstraint("job_id", "shard_key", name="uq_sync_shard_job_key"),
+        Index("ix_sync_shard_status", "status"),
+        Index("ix_sync_shard_task_id", "task_id"),
+    )
+
+
+class JobLog(Base):
+    """正式任务运行日志。"""
+    __tablename__ = "job_log"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    job_id: Mapped[Optional[int]] = mapped_column(ForeignKey("sync_job.id"), default=None)
+    shard_id: Mapped[Optional[int]] = mapped_column(ForeignKey("sync_shard.id"), default=None)
+    level: Mapped[str] = mapped_column(
+        String(16),
+        CheckConstraint("level IN ('DEBUG','INFO','WARN','ERROR')", name="ck_job_log_level"),
+        nullable=False,
+    )
+    message: Mapped[str] = mapped_column(Text, nullable=False)
+    context: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow)
+
+    job: Mapped[Optional["SyncJob"]] = relationship("SyncJob", back_populates="logs")
+
+    __table_args__ = (
+        Index("ix_job_log_job_id", "job_id"),
+        Index("ix_job_log_shard_id", "shard_id"),
+        Index("ix_job_log_level", "level"),
+    )
+
+
+class CharacterMonthlyStats(Base):
+    """角色月度聚合表。"""
+    __tablename__ = "character_monthly_stats"
+
+    character_tag_id: Mapped[int] = mapped_column(Integer, ForeignKey("tag.id"), primary_key=True)
+    month_start: Mapped[date] = mapped_column(Date, primary_key=True)
+    post_count: Mapped[int] = mapped_column(Integer, default=0)
+    fav_count_sum: Mapped[int] = mapped_column(Integer, default=0)
+    score_sum: Mapped[int] = mapped_column(Integer, default=0)
+    first_post_id: Mapped[Optional[int]] = mapped_column(BigInteger, default=None)
+    first_seen_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), default=None)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow
+    )
+
+    __table_args__ = (
+        Index("ix_character_monthly_stats_month", "month_start"),
+        Index("ix_character_monthly_stats_count", "post_count"),
+    )
+
+
+class CharacterMonthlyCopyright(Base):
+    """角色-作品月度共现聚合表。"""
+    __tablename__ = "character_monthly_copyright"
+
+    character_tag_id: Mapped[int] = mapped_column(Integer, ForeignKey("tag.id"), primary_key=True)
+    copyright_tag_id: Mapped[int] = mapped_column(Integer, ForeignKey("tag.id"), primary_key=True)
+    month_start: Mapped[date] = mapped_column(Date, primary_key=True)
+    post_count: Mapped[int] = mapped_column(Integer, default=0)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow
+    )
+
+    __table_args__ = (
+        Index("ix_character_monthly_copyright_month", "month_start"),
+        Index("ix_character_monthly_copyright_count", "post_count"),
+    )
+
+
+class CharacterBirthCache(Base):
+    """角色首现缓存表。"""
+    __tablename__ = "character_birth_cache"
+
+    character_tag_id: Mapped[int] = mapped_column(Integer, ForeignKey("tag.id"), primary_key=True)
+    first_seen_post_id: Mapped[Optional[int]] = mapped_column(BigInteger, default=None)
+    first_seen_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), default=None)
+    birth_confidence: Mapped[float] = mapped_column(Float, default=0.0)
+    source: Mapped[str] = mapped_column(String(64), default="post_history")
+    notes: Mapped[Optional[str]] = mapped_column(Text, default=None)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow
+    )
+
+
+class RankingSnapshot(Base):
+    """榜单快照表。"""
+    __tablename__ = "ranking_snapshot"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    ranking_type: Mapped[str] = mapped_column(String(64), nullable=False)
+    window_months: Mapped[int] = mapped_column(Integer, default=6)
+    top_n: Mapped[int] = mapped_column(Integer, default=200)
+    min_post_count: Mapped[int] = mapped_column(Integer, default=50)
+    filters: Mapped[dict] = mapped_column(JSON, default=dict)
+    generated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow)
+    export_json_path: Mapped[Optional[str]] = mapped_column(Text, default=None)
+    export_csv_path: Mapped[Optional[str]] = mapped_column(Text, default=None)
+
+    items: Mapped[list["RankingSnapshotItem"]] = relationship(
+        "RankingSnapshotItem", back_populates="snapshot", cascade="all, delete-orphan"
+    )
+
+    __table_args__ = (
+        Index("ix_ranking_snapshot_type_generated", "ranking_type", "generated_at"),
+    )
+
+
+class RankingSnapshotItem(Base):
+    """榜单快照条目表。"""
+    __tablename__ = "ranking_snapshot_item"
+
+    snapshot_id: Mapped[int] = mapped_column(ForeignKey("ranking_snapshot.id"), primary_key=True)
+    rank: Mapped[int] = mapped_column(Integer, primary_key=True)
+    character_tag_id: Mapped[int] = mapped_column(Integer, ForeignKey("tag.id"), nullable=False)
+    character_tag: Mapped[str] = mapped_column(String(512), nullable=False)
+    post_count: Mapped[int] = mapped_column(Integer, default=0)
+    recent_post_count: Mapped[int] = mapped_column(Integer, default=0)
+    popularity_score: Mapped[float] = mapped_column(Float, default=0.0)
+    growth_score: Mapped[float] = mapped_column(Float, default=0.0)
+    payload: Mapped[dict] = mapped_column(JSON, default=dict)
+
+    snapshot: Mapped["RankingSnapshot"] = relationship("RankingSnapshot", back_populates="items")
+
+    __table_args__ = (
+        Index("ix_ranking_snapshot_item_character", "character_tag_id"),
+    )
+
+
+class DownloadJob(Base):
+    """榜单驱动的下载任务。"""
+    __tablename__ = "download_job"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    source_snapshot_id: Mapped[Optional[int]] = mapped_column(ForeignKey("ranking_snapshot.id"), default=None)
+    name: Mapped[str] = mapped_column(String(255), nullable=False)
+    status: Mapped[str] = mapped_column(
+        String(32),
+        CheckConstraint(
+            "status IN ('pending','running','completed','failed','cancelled')",
+            name="ck_download_job_status",
+        ),
+        default="pending",
+    )
+    params: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow
+    )
+
+    items: Mapped[list["DownloadJobItem"]] = relationship(
+        "DownloadJobItem", back_populates="job", cascade="all, delete-orphan"
+    )
+
+    __table_args__ = (
+        Index("ix_download_job_status", "status"),
+    )
+
+
+class DownloadJobItem(Base):
+    """榜单角色定向下载条目。"""
+    __tablename__ = "download_job_item"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    job_id: Mapped[int] = mapped_column(ForeignKey("download_job.id"), nullable=False)
+    character_tag_id: Mapped[int] = mapped_column(Integer, ForeignKey("tag.id"), nullable=False)
+    character_tag: Mapped[str] = mapped_column(String(512), nullable=False)
+    target_count: Mapped[int] = mapped_column(Integer, default=0)
+    downloaded_count: Mapped[int] = mapped_column(Integer, default=0)
+    status: Mapped[str] = mapped_column(
+        String(32),
+        CheckConstraint(
+            "status IN ('pending','running','completed','failed','skipped')",
+            name="ck_download_job_item_status",
+        ),
+        default="pending",
+    )
+    output_dir: Mapped[Optional[str]] = mapped_column(Text, default=None)
+    error_message: Mapped[Optional[str]] = mapped_column(Text, default=None)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow
+    )
+
+    job: Mapped["DownloadJob"] = relationship("DownloadJob", back_populates="items")
+
+    __table_args__ = (
+        UniqueConstraint("job_id", "character_tag_id", name="uq_download_job_item_character"),
+        Index("ix_download_job_item_status", "status"),
     )
 
 

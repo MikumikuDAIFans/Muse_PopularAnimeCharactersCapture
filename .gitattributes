@@ -11,5 +11,3 @@
 *.webp binary
 *.ico binary
 *.db binary
-*.sqlite binary
-*.sqlite3 binary

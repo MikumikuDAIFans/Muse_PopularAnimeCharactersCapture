@@ -25,7 +25,7 @@ class Settings(BaseSettings):
 
     # ========== 数据库配置 ==========
     DATABASE_URL: str = Field(
-        default="sqlite+aiosqlite:///./muse_dataload.db",
+        default="postgresql+asyncpg://postgres@127.0.0.1:5432/muse_dataload",
         description="SQLAlchemy数据库连接URL"
     )
     DATABASE_ECHO: bool = Field(

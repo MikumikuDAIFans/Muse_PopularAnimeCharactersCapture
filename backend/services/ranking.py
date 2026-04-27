@@ -14,7 +14,17 @@ from sqlalchemy import delete, func, select
 from sqlalchemy.orm import aliased
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from models import Character, CharacterCopyright, Copyright, Post, PostTag, Tag, TagAlias
+from models import (
+    Character,
+    CharacterCopyright,
+    Copyright,
+    Post,
+    PostTag,
+    RankingSnapshot,
+    RankingSnapshotItem,
+    Tag,
+    TagAlias,
+)
 from services.rules import RuleSet, load_rules
 
 def recent_cutoff(months: int, now: datetime | None = None) -> datetime:
@@ -160,7 +170,7 @@ async def build_character_ranking(
             copyright_by_tag[int(tag_id)][cr_name] += int(count)
             copyright_ref_by_tag[int(tag_id)] += int(count)
 
-    for item in rows:
+    for item in items:
         copyrights = Counter()
         best_confidence = 0.0
         for tag_id in source_tag_ids[item["character_tag"]]:
@@ -177,6 +187,12 @@ async def build_character_ranking(
 
     for idx, item in enumerate(items, 1):
         item["rank"] = idx
+
+    tag_id_by_character = {
+        item["character_tag"]: source_tag_ids[item["character_tag"]][0]
+        for item in items
+        if source_tag_ids.get(item["character_tag"])
+    }
 
     await session.execute(delete(CharacterCopyright))
     for item in items:
@@ -209,8 +225,9 @@ async def build_character_ranking(
 
     export_dir = Path(output_root) / "exports"
     export_dir.mkdir(parents=True, exist_ok=True)
-    json_path = export_dir / "character_list_recent_6m_top_200.json"
-    csv_path = export_dir / "character_list_recent_6m_top_200.csv"
+    export_stem = f"character_list_recent_{recent_months}m_top_{top_n}"
+    json_path = export_dir / f"{export_stem}.json"
+    csv_path = export_dir / f"{export_stem}.csv"
     payload = {
         "generated_at": now.isoformat(),
         "stat_at": now.isoformat(),
@@ -243,6 +260,37 @@ async def build_character_ranking(
             row = {key: item.get(key) for key in fieldnames}
             row["copyrights"] = "|".join(item.get("copyrights") or [])
             writer.writerow(row)
+
+    snapshot = RankingSnapshot(
+        ranking_type="recent",
+        window_months=recent_months,
+        top_n=top_n,
+        min_post_count=min_post_count,
+        filters=payload["filters"],
+        generated_at=now,
+        export_json_path=str(json_path),
+        export_csv_path=str(csv_path),
+    )
+    session.add(snapshot)
+    await session.flush()
+    for item in items:
+        tag_id = tag_id_by_character.get(item["character_tag"])
+        if tag_id is None:
+            continue
+        session.add(
+            RankingSnapshotItem(
+                snapshot_id=snapshot.id,
+                rank=int(item["rank"]),
+                character_tag_id=int(tag_id),
+                character_tag=item["character_tag"],
+                post_count=int(item["post_count"]),
+                recent_post_count=int(item["recent_post_count"]),
+                popularity_score=float(item["popularity_score"]),
+                growth_score=0.0,
+                payload=item,
+            )
+        )
+    await session.flush()
 
     return {
         "characters": items,

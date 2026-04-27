@@ -1,5 +1,16 @@
 services:
-  # 后端API服务
+  postgres:
+    image: postgres:16
+    environment:
+      - POSTGRES_USER=muse
+      - POSTGRES_PASSWORD=muse
+      - POSTGRES_DB=muse_dataload
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
   backend:
     build:
       context: .
@@ -8,11 +19,12 @@ services:
       - "8001:8000"
     volumes:
       - ./output:/app/output
-      - ./muse_dataload.db:/app/muse_dataload.db
     environment:
-      - DATABASE_URL=sqlite+aiosqlite:///./muse_dataload.db
+      - DATABASE_URL=postgresql+asyncpg://muse:muse@postgres:5432/muse_dataload
       - OUTPUT_ROOT=/app/output
       - DEBUG=false
+    depends_on:
+      - postgres
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=5).read()"]
@@ -21,7 +33,6 @@ services:
       retries: 3
       start_period: 10s
 
-  # 前端静态文件服务（使用构建好的dist）
   frontend:
     image: nginx:alpine
     ports:
@@ -32,3 +43,6 @@ services:
     depends_on:
       - backend
     restart: unless-stopped
+
+volumes:
+  postgres_data:

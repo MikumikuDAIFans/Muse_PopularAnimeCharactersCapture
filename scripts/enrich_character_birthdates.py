@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import os
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -16,6 +17,7 @@ for path in [str(ROOT), str(BACKEND)]:
     if path not in sys.path:
         sys.path.insert(0, path)
 
+from config import get_settings
 from database import close_db, get_session_factory, init_db
 from models import Character, Post, PostTag, Tag
 from services.danbooru import get_danbooru_client
@@ -23,6 +25,10 @@ from services.ingest import parse_datetime
 
 
 async def run(args) -> int:
+    if args.database_url:
+        os.environ["DATABASE_URL"] = args.database_url
+        get_settings.cache_clear()
+    await close_db()
     await init_db()
     client = get_danbooru_client()
     now = datetime.utcnow()
@@ -80,6 +86,7 @@ def main() -> int:
     parser.add_argument("--recent-months", type=int, default=6)
     parser.add_argument("--min-recent-count", type=int, default=5)
     parser.add_argument("--refresh", action="store_true")
+    parser.add_argument("--database-url", help="SQLAlchemy async database URL, e.g. postgresql+asyncpg://...")
     return asyncio.run(run(parser.parse_args()))
 
 

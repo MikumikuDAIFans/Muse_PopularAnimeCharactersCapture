@@ -1,28 +1,19 @@
 import json
-import sqlite3
-from pathlib import Path
 
-from scripts.import_jsonl_fast import ensure_schema, import_file
+from sqlalchemy import create_engine, text
 
-
-def test_ensure_schema_bootstraps_empty_sqlite_db(tmp_path):
-    db_path = tmp_path / "bootstrap.db"
-    conn = sqlite3.connect(db_path)
-    try:
-        ensure_schema(conn)
-        tables = {
-            row[0] for row in conn.execute("select name from sqlite_master where type='table'").fetchall()
-        }
-    finally:
-        conn.close()
-
-    assert "post" in tables
-    assert "tag" in tables
-    assert "post_tag" in tables
+from scripts.import_jsonl_fast import import_file, sync_database_url
 
 
-def test_import_file_populates_tags_and_post_links(tmp_path):
-    db_path = tmp_path / "import.db"
+def test_sync_database_url_converts_postgres_drivers():
+    assert (
+        sync_database_url("postgresql+asyncpg://u:p@localhost/db")
+        == "postgresql+psycopg://u:p@localhost/db"
+    )
+    assert sync_database_url("postgresql://u:p@localhost/db") == "postgresql+psycopg://u:p@localhost/db"
+
+
+def test_import_file_populates_postgresql_tables(pg_database_url, tmp_path):
     jsonl_path = tmp_path / "sample.jsonl"
     jsonl_path.write_text(
         json.dumps(
@@ -38,15 +29,18 @@ def test_import_file_populates_tags_and_post_links(tmp_path):
         encoding="utf-8",
     )
 
-    stats = import_file(db_path, jsonl_path, None, 1000, False)
+    stats = import_file(pg_database_url, jsonl_path, None, 1000, True)
 
-    conn = sqlite3.connect(db_path)
-    try:
-        tag_rows = conn.execute("select name, category from tag order by name").fetchall()
-        post_tag_count = conn.execute("select count(*) from post_tag").fetchone()[0]
-    finally:
-        conn.close()
+    engine = create_engine(sync_database_url(pg_database_url), future=True)
+    with engine.connect() as conn:
+        tag_rows = conn.execute(text("select name, category, post_count from tag order by name")).fetchall()
+        post_tag_count = conn.execute(text("select count(*) from post_tag")).scalar_one()
+    engine.dispose()
 
     assert stats == {"imported": 1, "errors": 0}
-    assert tag_rows == [("1girl", "general"), ("hatsune_miku", "character"), ("vocaloid", "copyright")]
+    assert tag_rows == [
+        ("1girl", "general", 1),
+        ("hatsune_miku", "character", 1),
+        ("vocaloid", "copyright", 1),
+    ]
     assert post_tag_count == 3

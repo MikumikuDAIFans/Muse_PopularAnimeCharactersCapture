@@ -5,7 +5,7 @@
     python scripts/sync_recent_posts.py --recent-months 24 --shard monthly --resume --skip-import
 
 分片 JSONL 会写入 output/metadata/，manifest 会记录每片状态、行数、重复 ID
-和错误数。需要把 JSONL 导入 SQLite 时，再去掉 --skip-import 或使用
+和错误数。需要把 JSONL 导入 PostgreSQL 时，再去掉 --skip-import 或使用
 scripts/import_jsonl_fast.py 离线导入。
 """
 
@@ -232,7 +232,7 @@ def main() -> int:
     parser.add_argument("--end-date", help="Override window end date, YYYY-MM-DD")
     parser.add_argument("--shard", choices=["none", "monthly", "quarterly"], default="none")
     parser.add_argument("--resume", action="store_true")
-    parser.add_argument("--skip-import", action="store_true", help="Keep JSONL only; do not import into SQLite")
+    parser.add_argument("--skip-import", action="store_true", help="Keep JSONL only; do not import into PostgreSQL")
     parser.add_argument("--tag-filter")
     parser.add_argument("--tags", nargs="*")
     parser.add_argument("--limit", type=int, help="Debug limit applied to each shard")

@@ -4,8 +4,6 @@ from typing import AsyncGenerator, Optional
 
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase
-from sqlalchemy.pool import StaticPool
-from sqlalchemy import text
 
 from config import get_settings
 
@@ -25,17 +23,9 @@ def get_engine():
     global _engine
     if _engine is None:
         settings = get_settings()
-        # SQLite使用StaticPool以支持多并发
-        connect_args = {}
-        if "sqlite" in settings.DATABASE_URL:
-            connect_args = {"check_same_thread": False}
-            connect_args["uri"] = True
-        
         _engine = create_async_engine(
             settings.DATABASE_URL,
             echo=settings.DATABASE_ECHO,
-            connect_args=connect_args,
-            poolclass=StaticPool if "sqlite" in settings.DATABASE_URL else None,
         )
     return _engine
 
@@ -45,16 +35,9 @@ async def get_async_engine():
     global _engine
     if _engine is None:
         settings = get_settings()
-        connect_args = {}
-        if "sqlite" in settings.DATABASE_URL:
-            connect_args = {"check_same_thread": False}
-            connect_args["uri"] = True
-        
         _engine = create_async_engine(
             settings.DATABASE_URL,
             echo=settings.DATABASE_ECHO,
-            connect_args=connect_args,
-            poolclass=StaticPool if "sqlite" in settings.DATABASE_URL else None,
         )
     return _engine
 
@@ -92,39 +75,6 @@ async def init_db():
     engine = await get_async_engine()
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
-        # 轻量迁移：create_all 不会给已有 SQLite 表补列。
-        tables = {
-            row[0]
-            for row in (
-                await conn.execute(text("SELECT name FROM sqlite_master WHERE type='table'"))
-            ).fetchall()
-        }
-        if "post" in tables:
-            result = await conn.execute(text("PRAGMA table_info(post)"))
-            existing = {row[1] for row in result.fetchall()}
-            for name, ddl in {
-                "file_url": "TEXT",
-                "preview_url": "TEXT",
-                "sample_url": "TEXT",
-                "source": "TEXT",
-                "fav_count": "INTEGER DEFAULT 0",
-            }.items():
-                if name not in existing:
-                    await conn.execute(text(f"ALTER TABLE post ADD COLUMN {name} {ddl}"))
-        if "character" in tables:
-            result = await conn.execute(text("PRAGMA table_info(character)"))
-            existing_character = {row[1] for row in result.fetchall()}
-            for name, ddl in {
-                "first_seen_post_id": "BIGINT",
-                "first_seen_at": "TIMESTAMP",
-                "character_age_days": "INTEGER",
-                "recent_ratio": "FLOAT DEFAULT 0.0",
-                "growth_score": "FLOAT DEFAULT 0.0",
-                "birth_confidence": "FLOAT DEFAULT 0.0",
-                "lifecycle_notes": "TEXT",
-            }.items():
-                if name not in existing_character:
-                    await conn.execute(text(f"ALTER TABLE character ADD COLUMN {name} {ddl}"))
 
 
 async def close_db():

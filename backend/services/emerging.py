@@ -15,7 +15,7 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import aliased
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from models import Character, Post, PostTag, Tag
+from models import Character, Post, PostTag, RankingSnapshot, RankingSnapshotItem, Tag
 
 
 def age_boost(age_days: int | None, max_age_days: int) -> float:
@@ -73,42 +73,52 @@ async def build_emerging_character_ranking(
     recent_cutoff = datetime(now.year, now.month, now.day)  # normalized for reproducibility
     from datetime import timedelta
     recent_cutoff = recent_cutoff - timedelta(days=183)
-    recent_rows = await session.execute(
+    recent_counts = (
         select(Tag.id, Tag.name, Tag.post_count, func.count(func.distinct(PostTag.post_id)).label("recent_count"))
         .join(PostTag, PostTag.tag_id == Tag.id)
         .join(Post, Post.id == PostTag.post_id)
         .where(Tag.category == "character", Post.created_at >= recent_cutoff)
         .group_by(Tag.id)
         .having(func.count(func.distinct(PostTag.post_id)) >= min_recent_count)
+        .subquery()
+    )
+    recent_rows = await session.execute(
+        select(
+            recent_counts.c.id,
+            recent_counts.c.name,
+            recent_counts.c.post_count,
+            recent_counts.c.recent_count,
+        )
     )
     candidates_raw = list(recent_rows.all())
-    candidate_ids = [int(row[0]) for row in candidates_raw]
 
     local_total_by_tag: Dict[int, int] = {}
-    if candidate_ids:
+    if candidates_raw:
         total_rows = await session.execute(
             select(PostTag.tag_id, func.count(func.distinct(PostTag.post_id)))
-            .where(PostTag.tag_id.in_(candidate_ids))
+            .join(recent_counts, recent_counts.c.id == PostTag.tag_id)
             .group_by(PostTag.tag_id)
         )
         local_total_by_tag = {int(row[0]): int(row[1]) for row in total_rows.all()}
 
-    character_rows = await session.execute(select(Character).where(Character.tag_id.in_(candidate_ids)))
+    character_rows = await session.execute(
+        select(Character).join(recent_counts, recent_counts.c.id == Character.tag_id)
+    )
     character_by_tag = {int(c.tag_id): c for c in character_rows.scalars().all()}
 
     candidates: List[Dict[str, Any]] = []
     max_recent = max((int(row[3]) for row in candidates_raw), default=1)
-    if candidate_ids:
+    if candidates_raw:
         char_pt = aliased(PostTag)
         cr_pt = aliased(PostTag)
         cr_tag = aliased(Tag)
         cr_rows = await session.execute(
             select(char_pt.tag_id, cr_tag.name, func.count(func.distinct(char_pt.post_id)))
+            .join(recent_counts, recent_counts.c.id == char_pt.tag_id)
             .join(Post, Post.id == char_pt.post_id)
             .join(cr_pt, cr_pt.post_id == char_pt.post_id)
             .join(cr_tag, cr_tag.id == cr_pt.tag_id)
             .where(
-                char_pt.tag_id.in_(candidate_ids),
                 Post.created_at >= recent_cutoff,
                 cr_tag.category == "copyright",
             )
@@ -168,6 +178,8 @@ async def build_emerging_character_ranking(
     for idx, item in enumerate(items, 1):
         item["rank"] = idx
 
+    tag_id_by_name = {str(row[1]): int(row[0]) for row in candidates_raw}
+
     export_dir = Path(output_root) / "exports"
     export_dir.mkdir(parents=True, exist_ok=True)
     json_path = export_dir / "character_list_emerging_6m_top_200.json"
@@ -205,6 +217,37 @@ async def build_emerging_character_ranking(
             row = {key: item.get(key) for key in fieldnames}
             row["copyrights"] = "|".join(item.get("copyrights") or [])
             writer.writerow(row)
+
+    snapshot = RankingSnapshot(
+        ranking_type="emerging",
+        window_months=6,
+        top_n=top_n,
+        min_post_count=min_post_count,
+        filters=payload["filters"],
+        generated_at=now,
+        export_json_path=str(json_path),
+        export_csv_path=str(csv_path),
+    )
+    session.add(snapshot)
+    await session.flush()
+    for item in items:
+        tag_id = tag_id_by_name.get(item["character_tag"])
+        if tag_id is None:
+            continue
+        session.add(
+            RankingSnapshotItem(
+                snapshot_id=snapshot.id,
+                rank=int(item["rank"]),
+                character_tag_id=int(tag_id),
+                character_tag=item["character_tag"],
+                post_count=int(item["post_count"]),
+                recent_post_count=int(item["recent_post_count"]),
+                popularity_score=float(item["popularity_score"]),
+                growth_score=float(item["growth_score"]),
+                payload=item,
+            )
+        )
+    await session.flush()
 
     return {
         "characters": items,

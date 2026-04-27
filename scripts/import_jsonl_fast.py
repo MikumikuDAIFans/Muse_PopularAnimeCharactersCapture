@@ -1,19 +1,26 @@
-"""快速导入 Danbooru JSONL 元数据到 SQLite。
-
-用于大批量 recent posts 同步后的离线导入，避免 ORM 逐行导入过慢。
-"""
+"""快速导入 Danbooru JSONL 元数据到 PostgreSQL。"""
 
 from __future__ import annotations
 
 import argparse
 import json
-import sqlite3
+import os
 import sys
 from datetime import datetime
 from pathlib import Path
+from typing import Any
+
+from sqlalchemy import create_engine, delete, func, select, update
 
 ROOT = Path(__file__).resolve().parents[1]
-INIT_SQL = ROOT / "sql" / "init.sql"
+BACKEND = ROOT / "backend"
+for path in [str(ROOT), str(BACKEND)]:
+    if path not in sys.path:
+        sys.path.insert(0, path)
+
+from database import Base
+import models  # noqa: F401
+
 
 TAG_FIELDS = {
     "general": "tag_string_general",
@@ -24,187 +31,185 @@ TAG_FIELDS = {
 }
 
 
-def split_tags(value):
+def split_tags(value: str | None) -> list[str]:
     return [t.strip() for t in (value or "").split() if t.strip()]
 
 
-def parse_datetime(value):
+def parse_datetime_value(value: str | None) -> datetime | None:
     if not value:
         return None
     try:
-        return datetime.fromisoformat(value.replace("Z", "+00:00")).replace(tzinfo=None).isoformat()
+        return datetime.fromisoformat(value.replace("Z", "+00:00")).replace(tzinfo=None)
     except Exception:
         return None
 
 
-def grouped_tags(post):
+def grouped_tags(post: dict[str, Any]) -> dict[str, list[str]]:
     return {category: split_tags(post.get(field)) for category, field in TAG_FIELDS.items()}
 
 
-def ensure_schema(conn: sqlite3.Connection):
-    tables = {row[0] for row in conn.execute("select name from sqlite_master where type='table'").fetchall()}
-    if "post" not in tables and INIT_SQL.exists():
-        conn.executescript(INIT_SQL.read_text(encoding="utf-8"))
-        tables = {row[0] for row in conn.execute("select name from sqlite_master where type='table'").fetchall()}
-    if "post" not in tables:
-        raise sqlite3.OperationalError("no such table: post")
-
-    # The app creates the full schema. This script only adds missing compatibility columns.
-    cols = {row[1] for row in conn.execute("pragma table_info(post)").fetchall()}
-    for name, ddl in {
-        "file_url": "TEXT",
-        "preview_url": "TEXT",
-        "sample_url": "TEXT",
-        "source": "TEXT",
-        "fav_count": "INTEGER DEFAULT 0",
-    }.items():
-        if name not in cols:
-            conn.execute(f"alter table post add column {name} {ddl}")
+def sync_database_url(url: str) -> str:
+    if url.startswith("postgresql+asyncpg://"):
+        return url.replace("postgresql+asyncpg://", "postgresql+psycopg://", 1)
+    if url.startswith("postgresql://"):
+        return url.replace("postgresql://", "postgresql+psycopg://", 1)
+    if url.startswith("postgresql+psycopg://"):
+        return url
+    raise ValueError("PostgreSQL DATABASE_URL is required, e.g. postgresql+asyncpg://user:pass@host/db")
 
 
-def resolve_tag_id(conn: sqlite3.Connection, cache: dict[tuple[str, str], int], name: str, category: str) -> int:
+def build_post_values(post: dict[str, Any], task_id: int | None) -> dict[str, Any]:
+    return {
+        "id": int(post["id"]),
+        "task_id": task_id,
+        "md5": post.get("md5"),
+        "file_url": post.get("file_url"),
+        "preview_url": post.get("preview_url"),
+        "sample_url": post.get("sample_url"),
+        "source": post.get("source"),
+        "uploader_id": post.get("uploader_id"),
+        "uploader_name": post.get("uploader_name"),
+        "tag_string": post.get("tag_string"),
+        "tag_count": int(post.get("tag_count") or 0),
+        "file_ext": post.get("file_ext"),
+        "file_size": post.get("file_size"),
+        "image_width": post.get("image_width"),
+        "image_height": post.get("image_height"),
+        "score": int(post.get("score") or 0),
+        "fav_count": int(post.get("fav_count") or 0),
+        "rating": post.get("rating"),
+        "sources": post.get("sources") or [],
+        "has_children": bool(post.get("has_children", False)),
+        "is_deleted": bool(post.get("is_deleted", False)),
+        "is_flagged": bool(post.get("is_flagged", False)),
+        "created_at": parse_datetime_value(post.get("created_at")),
+        "file_verified": False,
+    }
+
+
+def post_upsert(table, values: dict[str, Any], update_columns: list[str]):
+    from sqlalchemy.dialects.postgresql import insert
+
+    stmt = insert(table).values(**values)
+    return stmt.on_conflict_do_update(
+        index_elements=[table.c.id],
+        set_={name: getattr(stmt.excluded, name) for name in update_columns},
+    )
+
+
+def insert_ignore(table, values: dict[str, Any]):
+    from sqlalchemy.dialects.postgresql import insert
+
+    return insert(table).values(**values).on_conflict_do_nothing()
+
+
+def resolve_tag_id(conn, tag_table, cache: dict[tuple[str, str], int], name: str, category: str) -> int:
     key = (name, category)
     if key in cache:
         return cache[key]
-    row = conn.execute("select id, category from tag where name=?", (name,)).fetchone()
+    row = conn.execute(select(tag_table.c.id, tag_table.c.category).where(tag_table.c.name == name)).first()
     if row:
-        tid = int(row[0])
-        if row[1] != category:
-            conn.execute("update tag set category=?, updated_at=current_timestamp where id=?", (category, tid))
+        tag_id = int(row.id)
+        if row.category != category:
+            conn.execute(update(tag_table).where(tag_table.c.id == tag_id).values(category=category))
     else:
-        cur = conn.execute(
-            "insert into tag (name, category, post_count, updated_at) values (?, ?, 0, current_timestamp)",
-            (name, category),
-        )
-        tid = int(cur.lastrowid)
-    cache[key] = tid
-    return tid
+        result = conn.execute(tag_table.insert().values(name=name, category=category, post_count=0))
+        tag_id = int(result.inserted_primary_key[0])
+    cache[key] = tag_id
+    return tag_id
 
 
-def import_file(db_path: Path, jsonl_path: Path, task_id: int | None, batch_size: int, recount_tag_counts: bool) -> dict:
-    conn = sqlite3.connect(db_path)
-    conn.execute("pragma journal_mode=wal")
-    conn.execute("pragma synchronous=normal")
-    ensure_schema(conn)
+def import_file(database_url: str, jsonl_path: Path, task_id: int | None, batch_size: int, recount_tag_counts: bool) -> dict:
+    engine = create_engine(sync_database_url(database_url), future=True)
+    post_table = Base.metadata.tables["post"]
+    tag_table = Base.metadata.tables["tag"]
+    post_tag_table = Base.metadata.tables["post_tag"]
+    post_update_columns = [
+        "task_id",
+        "md5",
+        "file_url",
+        "preview_url",
+        "sample_url",
+        "source",
+        "uploader_id",
+        "uploader_name",
+        "tag_string",
+        "tag_count",
+        "file_ext",
+        "file_size",
+        "image_width",
+        "image_height",
+        "score",
+        "fav_count",
+        "rating",
+        "sources",
+        "has_children",
+        "is_deleted",
+        "is_flagged",
+        "created_at",
+    ]
+
+    with engine.begin() as conn:
+        Base.metadata.create_all(conn)
+
     imported = 0
     errors = 0
     cache: dict[tuple[str, str], int] = {}
-    touched_tags: set[int] = set()
-    with open(jsonl_path, "r", encoding="utf-8") as f:
-        for line in f:
-            if not line.strip():
-                continue
-            try:
-                post = json.loads(line)
-                post_id = int(post["id"])
+    conn = engine.connect()
+    trans = conn.begin()
+    try:
+        with open(jsonl_path, "r", encoding="utf-8") as f:
+            for line in f:
+                if not line.strip():
+                    continue
+                try:
+                    post = json.loads(line)
+                    post_id = int(post["id"])
+                    conn.execute(post_upsert(post_table, build_post_values(post, task_id), post_update_columns))
+                    conn.execute(delete(post_tag_table).where(post_tag_table.c.post_id == post_id))
+                    for category, tags in grouped_tags(post).items():
+                        for name in dict.fromkeys(tags):
+                            tag_id = resolve_tag_id(conn, tag_table, cache, name, category)
+                            conn.execute(insert_ignore(post_tag_table, {"post_id": post_id, "tag_id": tag_id}))
+                    imported += 1
+                    if imported % batch_size == 0:
+                        trans.commit()
+                        trans = conn.begin()
+                        print(f"imported={imported}", flush=True)
+                except Exception as exc:
+                    errors += 1
+                    if errors <= 5:
+                        print(f"error: {exc}", file=sys.stderr, flush=True)
+        trans.commit()
+        trans = conn.begin()
+        if recount_tag_counts:
+            conn.execute(update(tag_table).values(post_count=0))
+            rows = conn.execute(select(post_tag_table.c.tag_id, func.count()).group_by(post_tag_table.c.tag_id)).all()
+            for tag_id, observed in rows:
                 conn.execute(
-                    """
-                    insert into post (
-                        id, task_id, md5, file_url, preview_url, sample_url, source,
-                        uploader_id, uploader_name, tag_string, tag_count, file_ext, file_size,
-                        image_width, image_height, score, fav_count, rating, sources,
-                        has_children, is_deleted, is_flagged, created_at, fetched_at, file_verified
-                    )
-                    values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, current_timestamp, 0)
-                    on conflict(id) do update set
-                        task_id=excluded.task_id,
-                        md5=excluded.md5,
-                        file_url=excluded.file_url,
-                        preview_url=excluded.preview_url,
-                        sample_url=excluded.sample_url,
-                        source=excluded.source,
-                        uploader_id=excluded.uploader_id,
-                        uploader_name=excluded.uploader_name,
-                        tag_string=excluded.tag_string,
-                        tag_count=excluded.tag_count,
-                        file_ext=excluded.file_ext,
-                        file_size=excluded.file_size,
-                        image_width=excluded.image_width,
-                        image_height=excluded.image_height,
-                        score=excluded.score,
-                        fav_count=excluded.fav_count,
-                        rating=excluded.rating,
-                        sources=excluded.sources,
-                        has_children=excluded.has_children,
-                        is_deleted=excluded.is_deleted,
-                        is_flagged=excluded.is_flagged,
-                        created_at=excluded.created_at
-                    """,
-                    (
-                        post_id,
-                        task_id,
-                        post.get("md5"),
-                        post.get("file_url"),
-                        post.get("preview_url"),
-                        post.get("sample_url"),
-                        post.get("source"),
-                        post.get("uploader_id"),
-                        post.get("uploader_name"),
-                        post.get("tag_string"),
-                        int(post.get("tag_count") or 0),
-                        post.get("file_ext"),
-                        post.get("file_size"),
-                        post.get("image_width"),
-                        post.get("image_height"),
-                        int(post.get("score") or 0),
-                        int(post.get("fav_count") or 0),
-                        post.get("rating"),
-                        json.dumps(post.get("sources") or [], ensure_ascii=False),
-                        int(bool(post.get("has_children", False))),
-                        int(bool(post.get("is_deleted", False))),
-                        int(bool(post.get("is_flagged", False))),
-                        parse_datetime(post.get("created_at")),
-                    ),
+                    update(tag_table)
+                    .where(tag_table.c.id == int(tag_id))
+                    .values(post_count=int(observed))
                 )
-                conn.execute("delete from post_tag where post_id=?", (post_id,))
-                for category, tags in grouped_tags(post).items():
-                    for name in dict.fromkeys(tags):
-                        tid = resolve_tag_id(conn, cache, name, category)
-                        touched_tags.add(tid)
-                        conn.execute(
-                            "insert or ignore into post_tag (post_id, tag_id) values (?, ?)",
-                            (post_id, tid),
-                        )
-                imported += 1
-                if imported % batch_size == 0:
-                    conn.commit()
-                    print(f"imported={imported}", flush=True)
-            except Exception as exc:
-                errors += 1
-                if errors <= 5:
-                    print(f"error: {exc}", file=sys.stderr, flush=True)
-    conn.commit()
-    if recount_tag_counts:
-        if touched_tags:
-            placeholders = ",".join("?" for _ in touched_tags)
-            rows = conn.execute(
-                f"""
-                select tag_id, count(*)
-                from post_tag
-                where tag_id in ({placeholders})
-                group by tag_id
-                """,
-                tuple(touched_tags),
-            ).fetchall()
-            for resolved_tag_id, observed in rows:
-                conn.execute(
-                    "update tag set post_count=?, updated_at=current_timestamp where id=?",
-                    (int(observed), int(resolved_tag_id)),
-                )
-        conn.commit()
-    conn.close()
+        trans.commit()
+    except Exception:
+        trans.rollback()
+        raise
+    finally:
+        conn.close()
+        engine.dispose()
     return {"imported": imported, "errors": errors}
 
 
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("jsonl_path", type=Path)
-    parser.add_argument("--db", type=Path, default=Path("muse_dataload.db"))
+    parser.add_argument("--database-url", default=os.environ.get("DATABASE_URL"), required=os.environ.get("DATABASE_URL") is None)
     parser.add_argument("--task-id", type=int)
     parser.add_argument("--batch-size", type=int, default=1000)
     parser.add_argument("--recount-tag-counts", action="store_true")
     args = parser.parse_args()
-    stats = import_file(args.db, args.jsonl_path, args.task_id, args.batch_size, args.recount_tag_counts)
+    stats = import_file(args.database_url, args.jsonl_path, args.task_id, args.batch_size, args.recount_tag_counts)
     print(f"OK fast import {stats}")
     return 0 if stats["errors"] == 0 else 1
 

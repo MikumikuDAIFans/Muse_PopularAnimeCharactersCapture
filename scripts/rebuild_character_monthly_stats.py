@@ -1,4 +1,4 @@
-"""生成新兴热门角色榜。"""
+"""重建角色月度聚合表。"""
 
 from __future__ import annotations
 
@@ -16,7 +16,7 @@ for path in [str(ROOT), str(BACKEND)]:
 
 from config import get_settings
 from database import close_db, get_session_factory, init_db
-from services.emerging import build_emerging_character_ranking
+from services.aggregation import rebuild_character_monthly_aggregates
 
 
 def configure_database(args) -> None:
@@ -31,29 +31,15 @@ async def run(args) -> int:
     await init_db()
     factory = await get_session_factory()
     async with factory() as session:
-        result = await build_emerging_character_ranking(
-            session=session,
-            output_root=Path(args.output_root or get_settings().OUTPUT_ROOT),
-            top_n=args.top_n,
-            min_post_count=args.min_count,
-            min_recent_count=args.min_recent_count,
-            max_age_days=args.max_age_days,
-        )
+        stats = await rebuild_character_monthly_aggregates(session)
         await session.commit()
     await close_db()
-    print(f"OK build emerging total={result['total_count']}")
-    print(result["json_path"])
-    print(result["csv_path"])
+    print(f"OK rebuild monthly aggregates {stats}")
     return 0
 
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--top-n", type=int, default=200)
-    parser.add_argument("--min-count", type=int, default=50)
-    parser.add_argument("--min-recent-count", type=int, default=10)
-    parser.add_argument("--max-age-days", type=int, default=1095)
-    parser.add_argument("--output-root")
     parser.add_argument("--database-url", help="SQLAlchemy async database URL, e.g. postgresql+asyncpg://...")
     return asyncio.run(run(parser.parse_args()))
 
