@@ -88,34 +88,43 @@ async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
 
 async def init_db():
     """初始化数据库表"""
+    import models  # noqa: F401  # Ensure ORM models are registered on Base metadata.
     engine = await get_async_engine()
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
         # 轻量迁移：create_all 不会给已有 SQLite 表补列。
-        result = await conn.execute(text("PRAGMA table_info(post)"))
-        existing = {row[1] for row in result.fetchall()}
-        for name, ddl in {
-            "file_url": "TEXT",
-            "preview_url": "TEXT",
-            "sample_url": "TEXT",
-            "source": "TEXT",
-            "fav_count": "INTEGER DEFAULT 0",
-        }.items():
-            if name not in existing:
-                await conn.execute(text(f"ALTER TABLE post ADD COLUMN {name} {ddl}"))
-        result = await conn.execute(text("PRAGMA table_info(character)"))
-        existing_character = {row[1] for row in result.fetchall()}
-        for name, ddl in {
-            "first_seen_post_id": "BIGINT",
-            "first_seen_at": "TIMESTAMP",
-            "character_age_days": "INTEGER",
-            "recent_ratio": "FLOAT DEFAULT 0.0",
-            "growth_score": "FLOAT DEFAULT 0.0",
-            "birth_confidence": "FLOAT DEFAULT 0.0",
-            "lifecycle_notes": "TEXT",
-        }.items():
-            if name not in existing_character:
-                await conn.execute(text(f"ALTER TABLE character ADD COLUMN {name} {ddl}"))
+        tables = {
+            row[0]
+            for row in (
+                await conn.execute(text("SELECT name FROM sqlite_master WHERE type='table'"))
+            ).fetchall()
+        }
+        if "post" in tables:
+            result = await conn.execute(text("PRAGMA table_info(post)"))
+            existing = {row[1] for row in result.fetchall()}
+            for name, ddl in {
+                "file_url": "TEXT",
+                "preview_url": "TEXT",
+                "sample_url": "TEXT",
+                "source": "TEXT",
+                "fav_count": "INTEGER DEFAULT 0",
+            }.items():
+                if name not in existing:
+                    await conn.execute(text(f"ALTER TABLE post ADD COLUMN {name} {ddl}"))
+        if "character" in tables:
+            result = await conn.execute(text("PRAGMA table_info(character)"))
+            existing_character = {row[1] for row in result.fetchall()}
+            for name, ddl in {
+                "first_seen_post_id": "BIGINT",
+                "first_seen_at": "TIMESTAMP",
+                "character_age_days": "INTEGER",
+                "recent_ratio": "FLOAT DEFAULT 0.0",
+                "growth_score": "FLOAT DEFAULT 0.0",
+                "birth_confidence": "FLOAT DEFAULT 0.0",
+                "lifecycle_notes": "TEXT",
+            }.items():
+                if name not in existing_character:
+                    await conn.execute(text(f"ALTER TABLE character ADD COLUMN {name} {ddl}"))
 
 
 async def close_db():

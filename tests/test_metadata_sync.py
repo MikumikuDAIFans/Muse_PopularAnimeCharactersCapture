@@ -113,3 +113,54 @@ def test_character_candidates_from_jsonl(tmp_path):
     assert payload["characters"][0]["character_tag"] == "hatsune_miku"
     assert payload["characters"][0]["recent_post_count"] == 2
     assert payload["characters"][0]["copyrights"][:2] == ["vocaloid", "project_sekai"]
+
+
+def test_retry_failed_shards_selects_only_missing_or_zero_line_shards():
+    retry_failed_shards = load_script("retry_failed_shards.py")
+    args = argparse.Namespace(task_ids=None, max_shards=None, retry_nonzero_errors=False)
+    manifest = {
+        "shards": [
+            {
+                "task_id": 1,
+                "jsonl": {"exists": True, "lines": 100},
+                "worker": {"errors": 1},
+            },
+            {
+                "task_id": 2,
+                "jsonl": {"exists": False, "lines": 0},
+                "worker": {"errors": 1},
+            },
+            {
+                "task_id": 3,
+                "jsonl": {"exists": True, "lines": 0},
+                "worker": {"errors": 0},
+            },
+        ]
+    }
+
+    shards = retry_failed_shards.select_retry_shards(manifest, args)
+
+    assert [record["task_id"] for record in shards] == [2, 3]
+
+
+def test_retry_failed_shards_can_include_nonzero_error_shards():
+    retry_failed_shards = load_script("retry_failed_shards.py")
+    args = argparse.Namespace(task_ids=None, max_shards=None, retry_nonzero_errors=True)
+    manifest = {
+        "shards": [
+            {
+                "task_id": 1,
+                "jsonl": {"exists": True, "lines": 100},
+                "worker": {"errors": 1},
+            },
+            {
+                "task_id": 2,
+                "jsonl": {"exists": True, "lines": 120},
+                "worker": {"errors": 0},
+            },
+        ]
+    }
+
+    shards = retry_failed_shards.select_retry_shards(manifest, args)
+
+    assert [record["task_id"] for record in shards] == [1]

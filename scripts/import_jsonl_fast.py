@@ -12,6 +12,8 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
+ROOT = Path(__file__).resolve().parents[1]
+INIT_SQL = ROOT / "sql" / "init.sql"
 
 TAG_FIELDS = {
     "general": "tag_string_general",
@@ -40,6 +42,13 @@ def grouped_tags(post):
 
 
 def ensure_schema(conn: sqlite3.Connection):
+    tables = {row[0] for row in conn.execute("select name from sqlite_master where type='table'").fetchall()}
+    if "post" not in tables and INIT_SQL.exists():
+        conn.executescript(INIT_SQL.read_text(encoding="utf-8"))
+        tables = {row[0] for row in conn.execute("select name from sqlite_master where type='table'").fetchall()}
+    if "post" not in tables:
+        raise sqlite3.OperationalError("no such table: post")
+
     # The app creates the full schema. This script only adds missing compatibility columns.
     cols = {row[1] for row in conn.execute("pragma table_info(post)").fetchall()}
     for name, ddl in {
@@ -53,7 +62,7 @@ def ensure_schema(conn: sqlite3.Connection):
             conn.execute(f"alter table post add column {name} {ddl}")
 
 
-def tag_id(conn: sqlite3.Connection, cache: dict[tuple[str, str], int], name: str, category: str) -> int:
+def resolve_tag_id(conn: sqlite3.Connection, cache: dict[tuple[str, str], int], name: str, category: str) -> int:
     key = (name, category)
     if key in cache:
         return cache[key]
@@ -150,7 +159,7 @@ def import_file(db_path: Path, jsonl_path: Path, task_id: int | None, batch_size
                 conn.execute("delete from post_tag where post_id=?", (post_id,))
                 for category, tags in grouped_tags(post).items():
                     for name in dict.fromkeys(tags):
-                        tid = tag_id(conn, cache, name, category)
+                        tid = resolve_tag_id(conn, cache, name, category)
                         touched_tags.add(tid)
                         conn.execute(
                             "insert or ignore into post_tag (post_id, tag_id) values (?, ?)",
@@ -166,11 +175,22 @@ def import_file(db_path: Path, jsonl_path: Path, task_id: int | None, batch_size
                     print(f"error: {exc}", file=sys.stderr, flush=True)
     conn.commit()
     if recount_tag_counts:
-        for tid in touched_tags:
-            observed = conn.execute("select count(*) from post_tag where tag_id=?", (tid,)).fetchone()[0]
-            row = conn.execute("select post_count from tag where id=?", (tid,)).fetchone()
-            if row and int(row[0] or 0) < observed:
-                conn.execute("update tag set post_count=?, updated_at=current_timestamp where id=?", (observed, tid))
+        if touched_tags:
+            placeholders = ",".join("?" for _ in touched_tags)
+            rows = conn.execute(
+                f"""
+                select tag_id, count(*)
+                from post_tag
+                where tag_id in ({placeholders})
+                group by tag_id
+                """,
+                tuple(touched_tags),
+            ).fetchall()
+            for resolved_tag_id, observed in rows:
+                conn.execute(
+                    "update tag set post_count=?, updated_at=current_timestamp where id=?",
+                    (int(observed), int(resolved_tag_id)),
+                )
         conn.commit()
     conn.close()
     return {"imported": imported, "errors": errors}

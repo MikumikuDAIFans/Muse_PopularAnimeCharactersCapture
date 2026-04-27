@@ -130,7 +130,13 @@ Invoke-RestMethod -Method Post `
 
 ```powershell
 .\.venv\Scripts\python.exe scripts\sync_recent_posts.py --recent-months 24 --shard monthly --resume --skip-import --task-id-prefix 924000
-.\.venv\Scripts\python.exe scripts\build_character_candidates_from_jsonl.py --recent-months 24 --top-n 500 --min-count 50
+.\\.venv\\Scripts\\python.exe scripts\\build_character_candidates_from_jsonl.py --recent-months 24 --top-n 500 --min-count 50
+```
+
+失败分片补跑：
+
+```powershell
+.\.venv\Scripts\python.exe scripts\retry_failed_shards.py --manifest output\metadata\sync_recent_posts_manifest.json --skip-import
 ```
 
 ## 核心 API
@@ -333,7 +339,13 @@ Run a recent 24-month metadata-only JSONL sync:
 
 ```powershell
 .\.venv\Scripts\python.exe scripts\sync_recent_posts.py --recent-months 24 --shard monthly --resume --skip-import --task-id-prefix 924000
-.\.venv\Scripts\python.exe scripts\build_character_candidates_from_jsonl.py --recent-months 24 --top-n 500 --min-count 50
+.\\.venv\\Scripts\\python.exe scripts\\build_character_candidates_from_jsonl.py --recent-months 24 --top-n 500 --min-count 50
+```
+
+Replay failed shards from a previous manifest:
+
+```powershell
+.\.venv\Scripts\python.exe scripts\retry_failed_shards.py --manifest output\metadata\sync_recent_posts_manifest.json --skip-import
 ```
 
 ## API Highlights

@@ -17,7 +17,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from models import Character, CharacterCopyright, Copyright, Post, PostTag, Tag, TagAlias
 from services.rules import RuleSet, load_rules
 
-
 def recent_cutoff(months: int, now: datetime | None = None) -> datetime:
     base = now or datetime.utcnow()
     return base - timedelta(days=months * 30)
@@ -72,15 +71,27 @@ async def build_character_ranking(
     cutoff = recent_cutoff(recent_months, now)
     aliases = await alias_map(session)
 
-    tag_rows = await session.execute(
-        select(Tag).where(Tag.category == "character", Tag.post_count >= min_post_count)
+    total_rows_result = await session.execute(
+        select(Tag.id, Tag.name, Tag.post_count, func.count(func.distinct(PostTag.post_id)))
+        .outerjoin(PostTag, PostTag.tag_id == Tag.id)
+        .where(Tag.category == "character")
+        .group_by(Tag.id)
     )
-    character_tags = list(tag_rows.scalars().all())
+    total_rows = list(total_rows_result.all())
+
+    recent_rows_result = await session.execute(
+        select(Tag.id, func.count(func.distinct(PostTag.post_id)))
+        .join(PostTag, PostTag.tag_id == Tag.id)
+        .join(Post, Post.id == PostTag.post_id)
+        .where(Tag.category == "character", Post.created_at >= cutoff)
+        .group_by(Tag.id)
+    )
+    recent_by_tag = {int(row[0]): int(row[1]) for row in recent_rows_result.all()}
 
     grouped: Dict[str, Dict[str, Any]] = {}
     source_tag_ids: Dict[str, List[int]] = defaultdict(list)
-    for tag in character_tags:
-        canonical = rules.canonical_character(tag.name, aliases)
+    for tag_id, tag_name, tag_post_count, observed_total_count in total_rows:
+        canonical = rules.canonical_character(tag_name, aliases)
         include, needs_review, note = rules.character_decision(canonical)
         if not include:
             continue
@@ -94,21 +105,10 @@ async def build_character_ranking(
                 "notes": [note] if note else [],
             },
         )
-        bucket["post_count"] = max(bucket["post_count"], int(tag.post_count or 0))
-        if canonical != tag.name:
-            bucket["notes"].append(f"alias: {tag.name} -> {canonical}")
-        source_tag_ids[canonical].append(tag.id)
-
-    all_source_ids = [tag_id for ids in source_tag_ids.values() for tag_id in ids]
-    recent_by_tag: Dict[int, int] = {}
-    if all_source_ids:
-        recent_rows = await session.execute(
-            select(PostTag.tag_id, func.count(func.distinct(PostTag.post_id)))
-            .join(Post, Post.id == PostTag.post_id)
-            .where(PostTag.tag_id.in_(all_source_ids), Post.created_at >= cutoff)
-            .group_by(PostTag.tag_id)
-        )
-        recent_by_tag = {int(row[0]): int(row[1]) for row in recent_rows.all()}
+        bucket["post_count"] = max(bucket["post_count"], int(tag_post_count or 0), int(observed_total_count or 0))
+        if canonical != tag_name:
+            bucket["notes"].append(f"alias: {tag_name} -> {canonical}")
+        source_tag_ids[canonical].append(int(tag_id))
 
     for canonical, tag_ids in source_tag_ids.items():
         grouped[canonical]["recent_post_count"] = sum(recent_by_tag.get(tag_id, 0) for tag_id in tag_ids)
@@ -126,7 +126,18 @@ async def build_character_ranking(
         recent_norm = item["recent_post_count"] / max_recent if max_recent else 0.0
         item["popularity_score"] = round(0.7 * total_norm + 0.3 * recent_norm, 6)
 
-    top_source_ids = [tag_id for item in rows for tag_id in source_tag_ids[item["character_tag"]]]
+    rows.sort(
+        key=lambda x: (
+            x["popularity_score"],
+            x["recent_post_count"],
+            x["post_count"],
+            x["character_tag"],
+        ),
+        reverse=True,
+    )
+    items = rows[:top_n]
+
+    top_source_ids = [tag_id for item in items for tag_id in source_tag_ids[item["character_tag"]]]
     copyright_by_tag: Dict[int, Counter] = defaultdict(Counter)
     copyright_ref_by_tag: Dict[int, int] = defaultdict(int)
     if top_source_ids:
@@ -164,16 +175,6 @@ async def build_character_ranking(
             item["notes"].append("missing copyright")
         item["notes"] = "; ".join(dict.fromkeys(n for n in item["notes"] if n))
 
-    rows.sort(
-        key=lambda x: (
-            x["popularity_score"],
-            x["recent_post_count"],
-            x["post_count"],
-            x["character_tag"],
-        ),
-        reverse=True,
-    )
-    items = rows[:top_n]
     for idx, item in enumerate(items, 1):
         item["rank"] = idx
 
