@@ -157,6 +157,7 @@ Muse_DataLoad/
 ├── cli/                     # CLI 入口
 ├── docs/                    # 最终开发计划、验收清单、验收报告
 ├── frontend/                # Vue 3 前端
+├── output/exports/          # 榜单交付物 (JSON/CSV，已入库)
 ├── rules/                   # tag 过滤与 caption 规则
 ├── scripts/                 # 构建、同步、校验、审计脚本
 ├── sql/                     # 数据库 SQL 辅助文件
@@ -167,6 +168,19 @@ Muse_DataLoad/
 └── README.md
 ```
 
+## 榜单交付物
+
+`output/exports/` 目录包含最新生成的角色榜单，已纳入版本控制：
+
+| 文件 | 说明 |
+|------|------|
+| `character_list_recent_6m_top_200.json` | 近 6 个月综合热门角色 Top 200 (JSON) |
+| `character_list_recent_6m_top_200.csv` | 近 6 个月综合热门角色 Top 200 (CSV) |
+| `character_list_emerging_6m_top_200.json` | 新兴热门角色 Top 200 (JSON) |
+| `character_list_emerging_6m_top_200.csv` | 新兴热门角色 Top 200 (CSV) |
+
+综合榜评分公式：`0.7 * log1p(total)/log1p(max_total) + 0.3 * recent/max_recent`
+
 ## 运行时数据
 
 以下内容为本地生成文件，不进入 git：
@@ -174,10 +188,8 @@ Muse_DataLoad/
 - `.venv/`
 - `frontend/node_modules/`
 - `frontend/dist/`
-- `output/`
+- `output/` (除 `output/exports/` 外)
 - 日志和测试缓存
-
-当前已验证的本地 PostgreSQL 数据包含 26,400 条帖子、1,026,478 条 post_tag 关系和生成后的榜单导出，但这些属于运行时产物，不是源码仓库内容。
 
 ## 文档
 
@@ -190,14 +202,14 @@ Muse_DataLoad/
 
 ## 当前验收快照
 
-当前本地 PostgreSQL 验收：
+当前本地 PostgreSQL 验收 (2026-05-02)：
 
-- PostgreSQL 16.13 真实运行通过。
-- JSONL 导入后 `post = 26,400`、`post_tag = 1,026,478`。
-- 综合榜导出 74 条。
-- 新兴榜导出 19 条，且不含 `hatsune_miku`。
-- 月度聚合、榜单快照、下载任务骨架均已落库。
-- `pytest -q` 为 19 passed。
+- PostgreSQL 16 真实运行通过。
+- JSONL 全量导入 49 个分片，`post = 3,505,800`、`tag = 575,479`、`post_tag = 142,456,486`。
+- 综合榜 Top 200 导出，#1 为 `hatsune_miku` (38,898 posts, score=1.0)。
+- 新兴榜 Top 200 导出，#1 为 `sakayori_iroha` (5,404 posts, growth=0.75)。
+- 角色样本导出验证：`hatsune_miku` 200 份图片/视频 + caption + metadata，0 错误。
+- 榜单交付物 (`output/exports/`) 已纳入版本控制。
 
 完整证据见 [docs/验收报告.md](docs/验收报告.md)。
 
@@ -362,6 +374,7 @@ Muse_DataLoad/
 ├── cli/                     # CLI entry point
 ├── docs/                    # Final plan, checklist, and acceptance report
 ├── frontend/                # Vue 3 frontend
+├── output/exports/          # Ranking deliverables (JSON/CSV, version-controlled)
 ├── rules/                   # Tag filtering and caption rules
 ├── scripts/                 # Build, sync, validation, and audit scripts
 ├── sql/                     # Database SQL helpers
@@ -372,6 +385,19 @@ Muse_DataLoad/
 └── README.md
 ```
 
+## Ranking Deliverables
+
+The `output/exports/` directory contains the latest generated character rankings and is version-controlled:
+
+| File | Description |
+|------|-------------|
+| `character_list_recent_6m_top_200.json` | Recent 6-month Top 200 comprehensive ranking (JSON) |
+| `character_list_recent_6m_top_200.csv` | Recent 6-month Top 200 comprehensive ranking (CSV) |
+| `character_list_emerging_6m_top_200.json` | Emerging Top 200 ranking (JSON) |
+| `character_list_emerging_6m_top_200.csv` | Emerging Top 200 ranking (CSV) |
+
+Scoring formula: `0.7 * log1p(total)/log1p(max_total) + 0.3 * recent/max_recent`
+
 ## Runtime Data
 
 The following are generated locally and are not committed:
@@ -379,10 +405,8 @@ The following are generated locally and are not committed:
 - `.venv/`
 - `frontend/node_modules/`
 - `frontend/dist/`
-- `output/`
+- `output/` (except `output/exports/`)
 - logs and test caches
-
-The current verified local PostgreSQL dataset includes 26,400 posts, 1,026,478 post_tag links, and generated ranking exports; these files are runtime artifacts rather than source-controlled project files.
 
 ## Documentation
 
@@ -395,13 +419,13 @@ Primary documentation:
 
 ## Current Acceptance Snapshot
 
-Current local PostgreSQL acceptance:
+Current local PostgreSQL acceptance (2026-05-02):
 
-- PostgreSQL 16.13 real run passed.
-- JSONL import produced `post = 26,400` and `post_tag = 1,026,478`.
-- Comprehensive ranking export has 74 rows.
-- Emerging ranking export has 19 rows and excludes `hatsune_miku`.
-- Monthly aggregates, ranking snapshots, and download-job skeleton records were written.
-- `pytest -q` reports 19 passed.
+- PostgreSQL 16 real run passed.
+- Full JSONL import: 49 shards, `post = 3,505,800`, `tag = 575,479`, `post_tag = 142,456,486`.
+- Comprehensive Top 200 ranking exported; #1 is `hatsune_miku` (38,898 posts, score=1.0).
+- Emerging Top 200 ranking exported; #1 is `sakayori_iroha` (5,404 posts, growth=0.75).
+- Dataset export verified: `hatsune_miku` 200 images/videos + captions + metadata, 0 errors.
+- Ranking deliverables (`output/exports/`) are version-controlled.
 
 See [docs/验收报告.md](docs/验收报告.md) for the full evidence record.

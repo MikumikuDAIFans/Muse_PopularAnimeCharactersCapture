@@ -1,0 +1,3413 @@
+{
+  "generated_at": "2026-05-02T09:13:18.747457+00:00",
+  "stat_at": "2026-05-02T09:13:18.747457+00:00",
+  "filters": {
+    "recent_months": 6,
+    "top_n": 200,
+    "min_post_count": 50,
+    "require_recent": true,
+    "recent_window_start": "2025-11-03"
+  },
+  "characters": [
+    {
+      "character_tag": "hatsune_miku",
+      "post_count": 38898,
+      "recent_post_count": 10461,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 1.0,
+      "copyrights": [
+        "vocaloid",
+        "utau",
+        "pokemon",
+        "project_sekai",
+        "project_voltage"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 1
+    },
+    {
+      "character_tag": "hakurei_reimu",
+      "post_count": 17490,
+      "recent_post_count": 6503,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.833554,
+      "copyrights": [
+        "touhou",
+        "touhou_(pc-98)",
+        "embodiment_of_scarlet_devil",
+        "cookie_(touhou)",
+        "imperishable_night"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 2
+    },
+    {
+      "character_tag": "sensei_(blue_archive)",
+      "post_count": 19830,
+      "recent_post_count": 4853,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.794551,
+      "copyrights": [
+        "blue_archive",
+        "comiket_107",
+        "blue_archive_the_animation",
+        "comiket_105",
+        "jujutsu_kaisen"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 3
+    },
+    {
+      "character_tag": "scaramouche_(genshin_impact)",
+      "post_count": 17337,
+      "recent_post_count": 4425,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.773379,
+      "copyrights": [
+        "genshin_impact",
+        "original",
+        "marvel",
+        "spider-man_(series)",
+        "pokemon"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 4
+    },
+    {
+      "character_tag": "kirisame_marisa",
+      "post_count": 13379,
+      "recent_post_count": 4827,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.767744,
+      "copyrights": [
+        "touhou",
+        "touhou_(pc-98)",
+        "cookie_(touhou)",
+        "curiosities_of_lotus_asia",
+        "touhou_lostword"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 5
+    },
+    {
+      "character_tag": "sakayori_iroha",
+      "post_count": 5404,
+      "recent_post_count": 5404,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.724255,
+      "copyrights": [
+        "cho_kaguya-hime!",
+        "world_is_mine_(vocaloid)",
+        "vocaloid",
+        "watashi_ga_koibito_ni_nareru_wake_naijan_murimuri!",
+        "lycoris_recoil"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 6
+    },
+    {
+      "character_tag": "trailblazer_(honkai:_star_rail)",
+      "post_count": 13238,
+      "recent_post_count": 2827,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.709686,
+      "copyrights": [
+        "honkai_(series)",
+        "honkai:_star_rail",
+        "mihoyo",
+        "genshin_impact",
+        "zenless_zone_zero"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 7
+    },
+    {
+      "character_tag": "columbina_(genshin_impact)",
+      "post_count": 5900,
+      "recent_post_count": 4516,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.704604,
+      "copyrights": [
+        "genshin_impact",
+        "honkai_(series)",
+        "honkai:_star_rail",
+        "mihoyo",
+        "zenless_zone_zero"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 8
+    },
+    {
+      "character_tag": "komeiji_koishi",
+      "post_count": 9120,
+      "recent_post_count": 3363,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.70038,
+      "copyrights": [
+        "touhou",
+        "touhou_lostword",
+        "subterranean_animism",
+        "koishi_komeiji's_heart-throbbing_adventure",
+        "touhou_hero_of_ice_fairy"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 9
+    },
+    {
+      "character_tag": "doodle_sensei_(blue_archive)",
+      "post_count": 11325,
+      "recent_post_count": 2713,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.69608,
+      "copyrights": [
+        "blue_archive",
+        "jujutsu_kaisen",
+        "blue_archive_the_animation",
+        "stella_sora",
+        "comiket_107"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 10
+    },
+    {
+      "character_tag": "elysia_(honkai_impact)",
+      "post_count": 9741,
+      "recent_post_count": 2998,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.694275,
+      "copyrights": [
+        "honkai_(series)",
+        "honkai_impact_3rd",
+        "honkai:_star_rail",
+        "mihoyo",
+        "genshin_impact"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 11
+    },
+    {
+      "character_tag": "kasane_teto",
+      "post_count": 11859,
+      "recent_post_count": 2522,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.693654,
+      "copyrights": [
+        "utau",
+        "synthesizer_v",
+        "vocaloid",
+        "a.i._voice",
+        "mesmerizer_(vocaloid)"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 12
+    },
+    {
+      "character_tag": "frieren",
+      "post_count": 8332,
+      "recent_post_count": 3125,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.68757,
+      "copyrights": [
+        "sousou_no_frieren",
+        "one-punch_man",
+        "chainsaw_man",
+        "dungeon_meshi",
+        "jujutsu_kaisen"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 13
+    },
+    {
+      "character_tag": "cyrene_(honkai:_star_rail)",
+      "post_count": 7249,
+      "recent_post_count": 3408,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.686465,
+      "copyrights": [
+        "honkai_(series)",
+        "honkai:_star_rail",
+        "honkai_impact_3rd",
+        "mihoyo",
+        "genshin_impact"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 14
+    },
+    {
+      "character_tag": "wanderer_(genshin_impact)",
+      "post_count": 9972,
+      "recent_post_count": 2594,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.684241,
+      "copyrights": [
+        "genshin_impact",
+        "original",
+        "honkai_(series)",
+        "honkai:_star_rail",
+        "zenless_zone_zero"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 15
+    },
+    {
+      "character_tag": "flandre_scarlet",
+      "post_count": 9255,
+      "recent_post_count": 2640,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.680619,
+      "copyrights": [
+        "touhou",
+        "touhou_lostword",
+        "embodiment_of_scarlet_devil",
+        "marisa_of_liartop_mountain",
+        "mcdonald's"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 16
+    },
+    {
+      "character_tag": "hina_(blue_archive)",
+      "post_count": 10133,
+      "recent_post_count": 2348,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.678247,
+      "copyrights": [
+        "blue_archive",
+        "comiket_107",
+        "street_fighter",
+        "kirby_(series)",
+        "pokemon"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 17
+    },
+    {
+      "character_tag": "firefly_(honkai:_star_rail)",
+      "post_count": 12585,
+      "recent_post_count": 1708,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.674246,
+      "copyrights": [
+        "honkai_(series)",
+        "honkai:_star_rail",
+        "genshin_impact",
+        "mihoyo",
+        "comiket_107"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 18
+    },
+    {
+      "character_tag": "rio_(blue_archive)",
+      "post_count": 8775,
+      "recent_post_count": 2540,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.674224,
+      "copyrights": [
+        "blue_archive",
+        "comiket_107",
+        "wuthering_waves",
+        "goddess_of_victory:_nikke",
+        "arknights"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 19
+    },
+    {
+      "character_tag": "raiden_shogun",
+      "post_count": 7925,
+      "recent_post_count": 2655,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.670775,
+      "copyrights": [
+        "genshin_impact",
+        "honkai_(series)",
+        "mihoyo",
+        "honkai:_star_rail",
+        "original"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 20
+    },
+    {
+      "character_tag": "kaguya_(cho_kaguya-hime!)",
+      "post_count": 4095,
+      "recent_post_count": 4095,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.668348,
+      "copyrights": [
+        "cho_kaguya-hime!",
+        "world_is_mine_(vocaloid)",
+        "dragon_ball",
+        "dragon_ball_z",
+        "vocaloid"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 21
+    },
+    {
+      "character_tag": "phainon_(honkai:_star_rail)",
+      "post_count": 8413,
+      "recent_post_count": 2326,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.665297,
+      "copyrights": [
+        "honkai_(series)",
+        "honkai:_star_rail",
+        "honkai_impact_3rd",
+        "mihoyo",
+        "original"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 22
+    },
+    {
+      "character_tag": "remilia_scarlet",
+      "post_count": 8231,
+      "recent_post_count": 2372,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.665168,
+      "copyrights": [
+        "touhou",
+        "touhou_lostword",
+        "embodiment_of_scarlet_devil",
+        "touhou_futanari_scarlet_escape",
+        "marisa_of_liartop_mountain"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 23
+    },
+    {
+      "character_tag": "rover_(wuthering_waves)",
+      "post_count": 7184,
+      "recent_post_count": 2584,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.662238,
+      "copyrights": [
+        "wuthering_waves",
+        "genshin_impact",
+        "honkai:_star_rail",
+        "honkai_(series)",
+        "mihoyo"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 24
+    },
+    {
+      "character_tag": "agnes_tachyon_(umamusume)",
+      "post_count": 7521,
+      "recent_post_count": 2249,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.655667,
+      "copyrights": [
+        "umamusume",
+        "umamusume:_beginning_of_a_new_era",
+        "real_life",
+        "mega_man_(series)",
+        "mega_man_x_(series)"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 25
+    },
+    {
+      "character_tag": "reze_(chainsaw_man)",
+      "post_count": 6585,
+      "recent_post_count": 2496,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.653949,
+      "copyrights": [
+        "chainsaw_man",
+        "iris_out_(song)",
+        "boku_no_hero_academia",
+        "hololive",
+        "hololive_english"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 26
+    },
+    {
+      "character_tag": "artoria_pendragon_(fate)",
+      "post_count": 8000,
+      "recent_post_count": 1988,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.652271,
+      "copyrights": [
+        "fate_(series)",
+        "fate/grand_order",
+        "fate/stay_night",
+        "honkai_(series)",
+        "honkai:_star_rail"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 27
+    },
+    {
+      "character_tag": "mika_(blue_archive)",
+      "post_count": 8215,
+      "recent_post_count": 1899,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.651474,
+      "copyrights": [
+        "blue_archive",
+        "blue_archive_the_animation",
+        "jujutsu_kaisen",
+        "comiket_107",
+        "pokemon"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 28
+    },
+    {
+      "character_tag": "togawa_sakiko",
+      "post_count": 8803,
+      "recent_post_count": 1727,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.65112,
+      "copyrights": [
+        "bang_dream!",
+        "bang_dream!_it's_mygo!!!!!",
+        "arknights",
+        "yumenokessho",
+        "sweets_paradise"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 29
+    },
+    {
+      "character_tag": "manhattan_cafe_(umamusume)",
+      "post_count": 7255,
+      "recent_post_count": 2113,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.649382,
+      "copyrights": [
+        "umamusume",
+        "umamusume:_beginning_of_a_new_era",
+        "real_life",
+        "blue_archive",
+        "jujutsu_kaisen"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 30
+    },
+    {
+      "character_tag": "yuuka_(blue_archive)",
+      "post_count": 7882,
+      "recent_post_count": 1776,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.645207,
+      "copyrights": [
+        "blue_archive",
+        "comiket_107",
+        "blue_archive_the_animation",
+        "jujutsu_kaisen",
+        "stella_sora"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 31
+    },
+    {
+      "character_tag": "lumine_(genshin_impact)",
+      "post_count": 7742,
+      "recent_post_count": 1751,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.643303,
+      "copyrights": [
+        "genshin_impact",
+        "mihoyo",
+        "honkai_(series)",
+        "honkai:_star_rail",
+        "zenless_zone_zero"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 32
+    },
+    {
+      "character_tag": "runami_yachiyo",
+      "post_count": 3529,
+      "recent_post_count": 3529,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.642267,
+      "copyrights": [
+        "cho_kaguya-hime!",
+        "vocaloid",
+        "world_is_mine_(vocaloid)",
+        "bocchi_the_rock!",
+        "watashi_ga_koibito_ni_nareru_wake_naijan_murimuri!"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 33
+    },
+    {
+      "character_tag": "wise_(zenless_zone_zero)",
+      "post_count": 6510,
+      "recent_post_count": 2058,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.640629,
+      "copyrights": [
+        "zenless_zone_zero",
+        "honkai:_star_rail",
+        "honkai_(series)",
+        "genshin_impact",
+        "mihoyo"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 34
+    },
+    {
+      "character_tag": "gardevoir",
+      "post_count": 8736,
+      "recent_post_count": 1365,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.640233,
+      "copyrights": [
+        "pokemon",
+        "pokemon_legends:_z-a",
+        "pokemon_(anime)",
+        "poketoon",
+        "original"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 35
+    },
+    {
+      "character_tag": "izayoi_sakuya",
+      "post_count": 5961,
+      "recent_post_count": 2205,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.63901,
+      "copyrights": [
+        "touhou",
+        "touhou_tag_dream",
+        "embodiment_of_scarlet_devil",
+        "touhou_lostword",
+        "perfect_cherry_blossom"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 36
+    },
+    {
+      "character_tag": "cyrene_(demiurge)_(honkai:_star_rail)",
+      "post_count": 4395,
+      "recent_post_count": 2901,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.638788,
+      "copyrights": [
+        "honkai:_star_rail",
+        "honkai_(series)",
+        "honkai_impact_3rd",
+        "genshin_impact",
+        "mihoyo"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 37
+    },
+    {
+      "character_tag": "stelle_(honkai:_star_rail)",
+      "post_count": 8001,
+      "recent_post_count": 1505,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.638427,
+      "copyrights": [
+        "honkai:_star_rail",
+        "honkai_(series)",
+        "mihoyo",
+        "genshin_impact",
+        "honkai_impact_3rd"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 38
+    },
+    {
+      "character_tag": "belle_(zenless_zone_zero)",
+      "post_count": 7021,
+      "recent_post_count": 1801,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.638263,
+      "copyrights": [
+        "zenless_zone_zero",
+        "mihoyo",
+        "honkai_(series)",
+        "honkai:_star_rail",
+        "genshin_impact"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 39
+    },
+    {
+      "character_tag": "hoshino_(blue_archive)",
+      "post_count": 7417,
+      "recent_post_count": 1669,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.638111,
+      "copyrights": [
+        "blue_archive",
+        "jujutsu_kaisen",
+        "pokemon",
+        "original",
+        "comiket_107"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 40
+    },
+    {
+      "character_tag": "asuna_(blue_archive)",
+      "post_count": 7122,
+      "recent_post_count": 1742,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.637517,
+      "copyrights": [
+        "blue_archive",
+        "wuthering_waves",
+        "goddess_of_victory:_nikke",
+        "comiket_107",
+        "vocaloid"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 41
+    },
+    {
+      "character_tag": "cloud_strife",
+      "post_count": 7394,
+      "recent_post_count": 1620,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.6365,
+      "copyrights": [
+        "final_fantasy",
+        "final_fantasy_vii",
+        "final_fantasy_vii_remake",
+        "final_fantasy_vii:_ever_crisis",
+        "final_fantasy_vii:_advent_children"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 42
+    },
+    {
+      "character_tag": "gotoh_hitori",
+      "post_count": 7388,
+      "recent_post_count": 1611,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.636188,
+      "copyrights": [
+        "bocchi_the_rock!",
+        "pokemon",
+        "chainsaw_man",
+        "minecraft",
+        "comiket_107"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 43
+    },
+    {
+      "character_tag": "ouro_kronii",
+      "post_count": 6573,
+      "recent_post_count": 1828,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.634671,
+      "copyrights": [
+        "hololive",
+        "hololive_english",
+        "hololive_indonesia",
+        "chainsaw_man",
+        "fate_(series)"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 44
+    },
+    {
+      "character_tag": "chihaya_anon",
+      "post_count": 7872,
+      "recent_post_count": 1370,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.633479,
+      "copyrights": [
+        "bang_dream!",
+        "bang_dream!_it's_mygo!!!!!",
+        "sanrio",
+        "my_melody_(series)",
+        "bang_dream!_girls_band_party!"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 45
+    },
+    {
+      "character_tag": "sunny_(omori)",
+      "post_count": 5803,
+      "recent_post_count": 1864,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.627452,
+      "copyrights": [
+        "omori",
+        "utdr_(toby_fox)",
+        "deltarune",
+        "yume_nikki",
+        "undertale"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 46
+    },
+    {
+      "character_tag": "ellen_joe",
+      "post_count": 7731,
+      "recent_post_count": 1190,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.62712,
+      "copyrights": [
+        "zenless_zone_zero",
+        "coca-cola",
+        "comiket_107",
+        "pokemon",
+        "mihoyo"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 47
+    },
+    {
+      "character_tag": "trainer_(umamusume)",
+      "post_count": 5858,
+      "recent_post_count": 1825,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.626959,
+      "copyrights": [
+        "umamusume",
+        "original",
+        "jujutsu_kaisen",
+        "real_life",
+        "umamusume:_cinderella_gray"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 48
+    },
+    {
+      "character_tag": "basil_(omori)",
+      "post_count": 5773,
+      "recent_post_count": 1841,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.626449,
+      "copyrights": [
+        "omori",
+        "emori_(shrimperini)",
+        "pokemon",
+        "utdr_(toby_fox)",
+        "undertale"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 49
+    },
+    {
+      "character_tag": "kisaki_(blue_archive)",
+      "post_count": 6547,
+      "recent_post_count": 1483,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.624515,
+      "copyrights": [
+        "blue_archive",
+        "comiket_107",
+        "blue_archive_the_animation",
+        "original",
+        "comiket_106"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 50
+    },
+    {
+      "character_tag": "shinosawa_hiro",
+      "post_count": 5537,
+      "recent_post_count": 1762,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.62142,
+      "copyrights": [
+        "idolmaster",
+        "gakuen_idolmaster",
+        "koukei_(idolmaster)",
+        "sunfaded_(idolmaster)",
+        "contrast_(idolmaster)"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 51
+    },
+    {
+      "character_tag": "kim_dokja",
+      "post_count": 4154,
+      "recent_post_count": 2409,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.620944,
+      "copyrights": [
+        "omniscient_reader's_viewpoint",
+        "no_i'm_not_a_human",
+        "original",
+        "honkai:_star_rail",
+        "honkai_(series)"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 52
+    },
+    {
+      "character_tag": "link",
+      "post_count": 6164,
+      "recent_post_count": 1497,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.620924,
+      "copyrights": [
+        "the_legend_of_zelda",
+        "the_legend_of_zelda:_breath_of_the_wild",
+        "the_legend_of_zelda:_tears_of_the_kingdom",
+        "the_legend_of_zelda:_twilight_princess",
+        "the_legend_of_zelda:_ocarina_of_time"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 53
+    },
+    {
+      "character_tag": "shameimaru_aya",
+      "post_count": 4850,
+      "recent_post_count": 2040,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.62062,
+      "copyrights": [
+        "touhou",
+        "hidden_star_in_four_seasons",
+        "touhou_lostword",
+        "touhou_(pc-98)",
+        "original"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 54
+    },
+    {
+      "character_tag": "mydei_(honkai:_star_rail)",
+      "post_count": 5676,
+      "recent_post_count": 1670,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.620423,
+      "copyrights": [
+        "honkai:_star_rail",
+        "honkai_(series)",
+        "panty_&_stocking_with_garterbelt",
+        "cyberpunk_(series)",
+        "cyberpunk_2077"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 55
+    },
+    {
+      "character_tag": "nagasaki_soyo",
+      "post_count": 6896,
+      "recent_post_count": 1204,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.619953,
+      "copyrights": [
+        "bang_dream!",
+        "bang_dream!_it's_mygo!!!!!",
+        "the_legend_of_zelda",
+        "link!_like!_love_live!",
+        "love_live!"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 56
+    },
+    {
+      "character_tag": "hinoshita_kaho",
+      "post_count": 6653,
+      "recent_post_count": 1284,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.619871,
+      "copyrights": [
+        "link!_like!_love_live!",
+        "love_live!",
+        "love_live!_nijigasaki_high_school_idol_club",
+        "love_live!_sunshine!!",
+        "love_live!_superstar!!"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 57
+    },
+    {
+      "character_tag": "kei_(blue_archive)",
+      "post_count": 3373,
+      "recent_post_count": 2796,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.618252,
+      "copyrights": [
+        "blue_archive",
+        "jujutsu_kaisen",
+        "original",
+        "precure",
+        "comiket_107"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 58
+    },
+    {
+      "character_tag": "konpaku_youmu",
+      "post_count": 5166,
+      "recent_post_count": 1792,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.617688,
+      "copyrights": [
+        "touhou",
+        "touhou_lostword",
+        "perfect_cherry_blossom",
+        "wily_beast_and_weakest_creature",
+        "imperishable_night"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 59
+    },
+    {
+      "character_tag": "kayoko_(blue_archive)",
+      "post_count": 5882,
+      "recent_post_count": 1483,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.617421,
+      "copyrights": [
+        "blue_archive",
+        "comiket_105",
+        "comiket_107",
+        "blue_archive_the_animation",
+        "comiket_106"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 60
+    },
+    {
+      "character_tag": "seia_(blue_archive)",
+      "post_count": 6371,
+      "recent_post_count": 1257,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.616229,
+      "copyrights": [
+        "blue_archive",
+        "comiket_107",
+        "zenless_zone_zero",
+        "sousou_no_frieren",
+        "touhou"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 61
+    },
+    {
+      "character_tag": "furina_(genshin_impact)",
+      "post_count": 6734,
+      "recent_post_count": 1101,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.615425,
+      "copyrights": [
+        "genshin_impact",
+        "honkai_(series)",
+        "mihoyo",
+        "honkai:_star_rail",
+        "honkai_impact_3rd"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 62
+    },
+    {
+      "character_tag": "caelus_(honkai:_star_rail)",
+      "post_count": 5766,
+      "recent_post_count": 1446,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.615041,
+      "copyrights": [
+        "honkai_(series)",
+        "honkai:_star_rail",
+        "mihoyo",
+        "genshin_impact",
+        "zenless_zone_zero"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 63
+    },
+    {
+      "character_tag": "nahida_(genshin_impact)",
+      "post_count": 6624,
+      "recent_post_count": 1096,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.614191,
+      "copyrights": [
+        "genshin_impact",
+        "honkai_(series)",
+        "pokemon",
+        "honkai_impact_3rd",
+        "mihoyo"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 64
+    },
+    {
+      "character_tag": "sandrone_(genshin_impact)",
+      "post_count": 3339,
+      "recent_post_count": 2633,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.612907,
+      "copyrights": [
+        "genshin_impact",
+        "honkai_(series)",
+        "mihoyo",
+        "honkai:_star_rail",
+        "jujutsu_kaisen"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 65
+    },
+    {
+      "character_tag": "pikachu",
+      "post_count": 5210,
+      "recent_post_count": 1568,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.611825,
+      "copyrights": [
+        "pokemon",
+        "pokemon_(anime)",
+        "pokemon_pokopia",
+        "pokemon_red/green/blue/yellow",
+        "pokemon_firered_and_leafgreen"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 66
+    },
+    {
+      "character_tag": "hoshimachi_suisei",
+      "post_count": 6133,
+      "recent_post_count": 1184,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.611614,
+      "copyrights": [
+        "hololive",
+        "hololive_english",
+        "primadonna_(hoshimachi_suisei)",
+        "hololive_dev_is",
+        "fortnite"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 67
+    },
+    {
+      "character_tag": "shirakami_fubuki",
+      "post_count": 5561,
+      "recent_post_count": 1409,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.611583,
+      "copyrights": [
+        "hololive",
+        "hololive_english",
+        "pokemon",
+        "hololive_dev_is",
+        "hololive_indonesia"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 68
+    },
+    {
+      "character_tag": "shiina_taki",
+      "post_count": 6126,
+      "recent_post_count": 1138,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.610219,
+      "copyrights": [
+        "bang_dream!",
+        "bang_dream!_it's_mygo!!!!!",
+        "bang_dream!_girls_band_party!",
+        "arknights",
+        "love_live!"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 69
+    },
+    {
+      "character_tag": "march_7th_(honkai:_star_rail)",
+      "post_count": 5810,
+      "recent_post_count": 1260,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.610211,
+      "copyrights": [
+        "honkai:_star_rail",
+        "honkai_(series)",
+        "honkai_impact_3rd",
+        "mihoyo",
+        "genshin_impact"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 70
+    },
+    {
+      "character_tag": "iseri_nina",
+      "post_count": 6630,
+      "recent_post_count": 953,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.61015,
+      "copyrights": [
+        "girls_band_cry",
+        "girls_band_cry_rpg",
+        "bang_dream!",
+        "bang_dream!_it's_mygo!!!!!",
+        "bocchi_the_rock!"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 71
+    },
+    {
+      "character_tag": "momose_ginko",
+      "post_count": 5885,
+      "recent_post_count": 1209,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.609597,
+      "copyrights": [
+        "link!_like!_love_live!",
+        "love_live!",
+        "comiket_107",
+        "gamers_(store)",
+        "real_life"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 72
+    },
+    {
+      "character_tag": "usami_renko",
+      "post_count": 3680,
+      "recent_post_count": 2286,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.609394,
+      "copyrights": [
+        "touhou",
+        "magical_astronomy",
+        "dateless_bar_\"old_adam\"",
+        "ghostly_field_club",
+        "retrospective_53_minutes"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 73
+    },
+    {
+      "character_tag": "kawaragi_momoka",
+      "post_count": 6124,
+      "recent_post_count": 1102,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.609165,
+      "copyrights": [
+        "girls_band_cry",
+        "girls_band_cry_rpg",
+        "bang_dream!",
+        "bang_dream!_it's_mygo!!!!!",
+        "real_life"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 74
+    },
+    {
+      "character_tag": "cirno",
+      "post_count": 4990,
+      "recent_post_count": 1543,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.608251,
+      "copyrights": [
+        "touhou",
+        "touhou_hero_of_ice_fairy",
+        "embodiment_of_scarlet_devil",
+        "mcdonald's",
+        "hidden_star_in_four_seasons"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 75
+    },
+    {
+      "character_tag": "misumi_uika",
+      "post_count": 5857,
+      "recent_post_count": 1168,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.608106,
+      "copyrights": [
+        "bang_dream!",
+        "bang_dream!_it's_mygo!!!!!",
+        "arknights",
+        "yumenokessho",
+        "sweets_paradise"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 76
+    },
+    {
+      "character_tag": "princess_zelda",
+      "post_count": 5688,
+      "recent_post_count": 1196,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.60697,
+      "copyrights": [
+        "the_legend_of_zelda",
+        "the_legend_of_zelda:_tears_of_the_kingdom",
+        "the_legend_of_zelda:_breath_of_the_wild",
+        "the_legend_of_zelda:_twilight_princess",
+        "the_legend_of_zelda:_ocarina_of_time"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 77
+    },
+    {
+      "character_tag": "kazusa_(blue_archive)",
+      "post_count": 5962,
+      "recent_post_count": 1079,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.60673,
+      "copyrights": [
+        "blue_archive",
+        "comiket_107",
+        "jujutsu_kaisen",
+        "kamen_rider",
+        "fate/grand_order"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 78
+    },
+    {
+      "character_tag": "komeiji_satori",
+      "post_count": 4445,
+      "recent_post_count": 1752,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.606586,
+      "copyrights": [
+        "touhou",
+        "foul_detective_satori",
+        "subterranean_animism",
+        "touhou_lostword",
+        "touhou_(pc-98)"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 79
+    },
+    {
+      "character_tag": "hoshimi_miyabi",
+      "post_count": 6185,
+      "recent_post_count": 985,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.606466,
+      "copyrights": [
+        "zenless_zone_zero",
+        "nier:automata",
+        "nier_(series)",
+        "umamusume",
+        "wuthering_waves"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 80
+    },
+    {
+      "character_tag": "fujimaru_ritsuka_(male)",
+      "post_count": 5210,
+      "recent_post_count": 1378,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.606377,
+      "copyrights": [
+        "fate_(series)",
+        "fate/grand_order",
+        "original",
+        "fate/stay_night",
+        "fate/strange_fake"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 81
+    },
+    {
+      "character_tag": "aris_(blue_archive)",
+      "post_count": 4552,
+      "recent_post_count": 1675,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.605953,
+      "copyrights": [
+        "blue_archive",
+        "bloodborne",
+        "jujutsu_kaisen",
+        "gundam",
+        "the_legend_of_zelda"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 82
+    },
+    {
+      "character_tag": "kochiya_sanae",
+      "post_count": 4898,
+      "recent_post_count": 1502,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.605843,
+      "copyrights": [
+        "touhou",
+        "touhou_lostword",
+        "mountain_of_faith",
+        "bemani",
+        "dance_dance_revolution"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 83
+    },
+    {
+      "character_tag": "sparkle_(honkai:_star_rail)",
+      "post_count": 4378,
+      "recent_post_count": 1746,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.605409,
+      "copyrights": [
+        "honkai:_star_rail",
+        "honkai_(series)",
+        "honkai_impact_3rd",
+        "genshin_impact",
+        "mihoyo"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 84
+    },
+    {
+      "character_tag": "mari_(blue_archive)",
+      "post_count": 5844,
+      "recent_post_count": 1079,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.605406,
+      "copyrights": [
+        "blue_archive",
+        "arknights",
+        "wuthering_waves",
+        "comiket_107",
+        "comiket_103"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 85
+    },
+    {
+      "character_tag": "fern_(sousou_no_frieren)",
+      "post_count": 4607,
+      "recent_post_count": 1606,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.60477,
+      "copyrights": [
+        "sousou_no_frieren",
+        "pokemon",
+        "chainsaw_man",
+        "one-punch_man",
+        "original"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 86
+    },
+    {
+      "character_tag": "warrior_of_light_(ff14)",
+      "post_count": 5853,
+      "recent_post_count": 1036,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.604275,
+      "copyrights": [
+        "final_fantasy",
+        "final_fantasy_xiv",
+        "original",
+        "fallout",
+        "indie_virtual_youtuber"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 87
+    },
+    {
+      "character_tag": "tifa_lockhart",
+      "post_count": 5001,
+      "recent_post_count": 1392,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.604067,
+      "copyrights": [
+        "final_fantasy",
+        "final_fantasy_vii",
+        "final_fantasy_vii_remake",
+        "final_fantasy_vii:_ever_crisis",
+        "final_fantasy_vii_rebirth"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 88
+    },
+    {
+      "character_tag": "wakaba_mutsumi",
+      "post_count": 5968,
+      "recent_post_count": 962,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.603441,
+      "copyrights": [
+        "bang_dream!",
+        "bang_dream!_it's_mygo!!!!!",
+        "arknights",
+        "the_legend_of_zelda",
+        "girls_band_cry"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 89
+    },
+    {
+      "character_tag": "yakumo_yukari",
+      "post_count": 4675,
+      "recent_post_count": 1513,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.603073,
+      "copyrights": [
+        "touhou",
+        "imperishable_night",
+        "touhou_lostword",
+        "koishi_komeiji's_heart-throbbing_adventure",
+        "perfect_cherry_blossom"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 90
+    },
+    {
+      "character_tag": "yahata_umiri",
+      "post_count": 5640,
+      "recent_post_count": 1055,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.602365,
+      "copyrights": [
+        "bang_dream!",
+        "bang_dream!_it's_mygo!!!!!",
+        "arknights",
+        "girls_band_cry",
+        "bang_dream!_girls_band_party!"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 91
+    },
+    {
+      "character_tag": "maribel_hearn",
+      "post_count": 3463,
+      "recent_post_count": 2154,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.601584,
+      "copyrights": [
+        "touhou",
+        "taboo_japan_disentanglement",
+        "dateless_bar_\"old_adam\"",
+        "ghostly_field_club",
+        "magical_astronomy"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 92
+    },
+    {
+      "character_tag": "kirby",
+      "post_count": 4220,
+      "recent_post_count": 1684,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.601197,
+      "copyrights": [
+        "kirby_(series)",
+        "real_life",
+        "kirby_and_the_forgotten_land",
+        "pokemon",
+        "kirby_air_ride"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 93
+    },
+    {
+      "character_tag": "aerith_gainsborough",
+      "post_count": 5072,
+      "recent_post_count": 1236,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.600527,
+      "copyrights": [
+        "final_fantasy",
+        "final_fantasy_vii",
+        "final_fantasy_vii_remake",
+        "final_fantasy_vii_rebirth",
+        "final_fantasy_vii:_ever_crisis"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 94
+    },
+    {
+      "character_tag": "nami_(one_piece)",
+      "post_count": 4714,
+      "recent_post_count": 1390,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.600096,
+      "copyrights": [
+        "one_piece",
+        "one_piece_(live_action)",
+        "one_piece_film:_gold",
+        "one_piece_film:_red",
+        "one_piece_fan_letter"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 95
+    },
+    {
+      "character_tag": "kagamine_rin",
+      "post_count": 4832,
+      "recent_post_count": 1305,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.599295,
+      "copyrights": [
+        "vocaloid",
+        "project_sekai",
+        "utau",
+        "piapro_studio",
+        "roshin_yuukai_(vocaloid)"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 96
+    },
+    {
+      "character_tag": "nanami_chiaki",
+      "post_count": 5336,
+      "recent_post_count": 1063,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.598925,
+      "copyrights": [
+        "danganronpa_(series)",
+        "danganronpa_2:_goodbye_despair",
+        "danganronpa:_trigger_happy_havoc",
+        "danganronpa_3_(anime)",
+        "danganronpa_v3:_killing_harmony"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 97
+    },
+    {
+      "character_tag": "jane_doe_(zenless_zone_zero)",
+      "post_count": 5154,
+      "recent_post_count": 1063,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.596627,
+      "copyrights": [
+        "zenless_zone_zero",
+        "indie_virtual_youtuber",
+        "hololive",
+        "hololive_english",
+        "chainsaw_man"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 98
+    },
+    {
+      "character_tag": "fujishima_megumi",
+      "post_count": 5893,
+      "recent_post_count": 751,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.596553,
+      "copyrights": [
+        "link!_like!_love_live!",
+        "love_live!",
+        "love_live!_hasu_no_sora_jogakuin_school_idol_club_bloom_garden_party",
+        "real_life",
+        "minecraft"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 99
+    },
+    {
+      "character_tag": "nerissa_ravencroft",
+      "post_count": 4890,
+      "recent_post_count": 1179,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.596472,
+      "copyrights": [
+        "hololive",
+        "hololive_english",
+        "oyomeholic_(nerissa_ravencroft)",
+        "rabbit_hole_(vocaloid)",
+        "hololive_indonesia"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 100
+    },
+    {
+      "character_tag": "gold_ship_(umamusume)",
+      "post_count": 4190,
+      "recent_post_count": 1528,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.59625,
+      "copyrights": [
+        "umamusume",
+        "real_life",
+        "original",
+        "jojo_no_kimyou_na_bouken",
+        "pokemon"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 101
+    },
+    {
+      "character_tag": "aether_(genshin_impact)",
+      "post_count": 4850,
+      "recent_post_count": 1172,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.595727,
+      "copyrights": [
+        "genshin_impact",
+        "mihoyo",
+        "honkai_(series)",
+        "honkai:_star_rail",
+        "zenless_zone_zero"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 102
+    },
+    {
+      "character_tag": "don_quixote_(project_moon)",
+      "post_count": 4260,
+      "recent_post_count": 1465,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.595541,
+      "copyrights": [
+        "project_moon",
+        "limbus_company",
+        "lobotomy_corporation",
+        "library_of_ruina",
+        "mili_(band)"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 103
+    },
+    {
+      "character_tag": "murano_sayaka",
+      "post_count": 5247,
+      "recent_post_count": 961,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.594886,
+      "copyrights": [
+        "link!_like!_love_live!",
+        "love_live!",
+        "hasunosora_fantasy",
+        "love_live!_hasu_no_sora_jogakuin_school_idol_club_bloom_garden_party",
+        "real_life"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 104
+    },
+    {
+      "character_tag": "alice_margatroid",
+      "post_count": 4256,
+      "recent_post_count": 1440,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.594762,
+      "copyrights": [
+        "touhou",
+        "touhou_(pc-98)",
+        "cookie_(touhou)",
+        "imperishable_night",
+        "mystic_square"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 105
+    },
+    {
+      "character_tag": "kei_(new_body)_(blue_archive)",
+      "post_count": 2604,
+      "recent_post_count": 2573,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.594725,
+      "copyrights": [
+        "blue_archive",
+        "jujutsu_kaisen",
+        "original",
+        "precure",
+        "meitantei_precure!"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 106
+    },
+    {
+      "character_tag": "doctor_(arknights)",
+      "post_count": 4937,
+      "recent_post_count": 1093,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.594639,
+      "copyrights": [
+        "arknights",
+        "arknights:_endfield",
+        "bang_dream!",
+        "bang_dream!_it's_mygo!!!!!",
+        "stargate_(series)"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 107
+    },
+    {
+      "character_tag": "shiori_novella",
+      "post_count": 5055,
+      "recent_post_count": 1035,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.59454,
+      "copyrights": [
+        "hololive",
+        "hololive_english",
+        "hololive_indonesia",
+        "holostars",
+        "holostars_english"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 108
+    },
+    {
+      "character_tag": "yoo_joonghyuk",
+      "post_count": 3446,
+      "recent_post_count": 1908,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.594204,
+      "copyrights": [
+        "omniscient_reader's_viewpoint",
+        "no_i'm_not_a_human",
+        "original",
+        "honkai:_star_rail",
+        "honkai_(series)"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 109
+    },
+    {
+      "character_tag": "nekomata_okayu",
+      "post_count": 4308,
+      "recent_post_count": 1387,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.594046,
+      "copyrights": [
+        "hololive",
+        "hololive_english",
+        "hololive_dev_is",
+        "nijisanji",
+        "hololive_indonesia"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 110
+    },
+    {
+      "character_tag": "wei_wuxian",
+      "post_count": 4544,
+      "recent_post_count": 1238,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.593305,
+      "copyrights": [
+        "modao_zushi",
+        "pokemon",
+        "renzha_fanpai_zijiu_xitong",
+        "rabbit_hole_(vocaloid)",
+        "tianguan_cifu"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 111
+    },
+    {
+      "character_tag": "noa_(blue_archive)",
+      "post_count": 4294,
+      "recent_post_count": 1362,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.593113,
+      "copyrights": [
+        "blue_archive",
+        "comiket_107",
+        "wuthering_waves",
+        "goddess_of_victory:_nikke",
+        "comiket_106"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 112
+    },
+    {
+      "character_tag": "sunna_(zenless_zone_zero)",
+      "post_count": 2594,
+      "recent_post_count": 2442,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.590713,
+      "copyrights": [
+        "zenless_zone_zero",
+        "sanrio",
+        "fuwa_fuwa_cinnamoroll",
+        "my_melody_(series)",
+        "hello_kitty"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 113
+    },
+    {
+      "character_tag": "osawa_rurino",
+      "post_count": 4926,
+      "recent_post_count": 938,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.590046,
+      "copyrights": [
+        "link!_like!_love_live!",
+        "love_live!",
+        "love_live!_hasu_no_sora_jogakuin_school_idol_club_bloom_garden_party",
+        "real_life",
+        "zweigen_kanazawa"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 114
+    },
+    {
+      "character_tag": "houshou_marine",
+      "post_count": 4593,
+      "recent_post_count": 1098,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.59,
+      "copyrights": [
+        "hololive",
+        "hololive_english",
+        "hololive_dev_is",
+        "hololive_indonesia",
+        "how_about_paipai_mask?_(houshou_marine)"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 115
+    },
+    {
+      "character_tag": "male_rover_(wuthering_waves)",
+      "post_count": 3914,
+      "recent_post_count": 1451,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.58953,
+      "copyrights": [
+        "wuthering_waves",
+        "genshin_impact",
+        "comiket_107",
+        "blade_runner_(series)",
+        "blade_runner_2049"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 116
+    },
+    {
+      "character_tag": "anyoji_hime",
+      "post_count": 4828,
+      "recent_post_count": 957,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.589261,
+      "copyrights": [
+        "link!_like!_love_live!",
+        "love_live!",
+        "hasunosora_fantasy",
+        "love_live!_hasu_no_sora_jogakuin_school_idol_club_bloom_garden_party",
+        "bang_dream!"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 117
+    },
+    {
+      "character_tag": "female_rover_(wuthering_waves)",
+      "post_count": 3974,
+      "recent_post_count": 1360,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.587928,
+      "copyrights": [
+        "wuthering_waves",
+        "honkai:_star_rail",
+        "honkai_(series)",
+        "genshin_impact",
+        "mihoyo"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 118
+    },
+    {
+      "character_tag": "nikki_(nikki)",
+      "post_count": 3963,
+      "recent_post_count": 1357,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.587658,
+      "copyrights": [
+        "nikki_(series)",
+        "infinity_nikki",
+        "shining_nikki",
+        "miracle_nikki",
+        "nikki_up2u2:_world_traveller"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 119
+    },
+    {
+      "character_tag": "basil_(faraway)_(omori)",
+      "post_count": 4026,
+      "recent_post_count": 1308,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.587297,
+      "copyrights": [
+        "omori",
+        "emori_(shrimperini)",
+        "neon_genesis_evangelion",
+        "soul_eater",
+        "loveit?_(biz)"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 120
+    },
+    {
+      "character_tag": "toki_(blue_archive)",
+      "post_count": 4569,
+      "recent_post_count": 1008,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.587072,
+      "copyrights": [
+        "blue_archive",
+        "gintama",
+        "honkai:_star_rail",
+        "honkai_(series)",
+        "devil_may_cry_(series)"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 121
+    },
+    {
+      "character_tag": "otomune_kozue",
+      "post_count": 5457,
+      "recent_post_count": 579,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.58653,
+      "copyrights": [
+        "link!_like!_love_live!",
+        "love_live!",
+        "love_live!_hasu_no_sora_jogakuin_school_idol_club_bloom_garden_party",
+        "pokemon",
+        "comiket_103"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 122
+    },
+    {
+      "character_tag": "kaname_madoka",
+      "post_count": 4659,
+      "recent_post_count": 941,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.586442,
+      "copyrights": [
+        "mahou_shoujo_madoka_magica",
+        "mahou_shoujo_madoka_magica_(anime)",
+        "mahou_shoujo_madoka_magica:_hangyaku_no_monogatari",
+        "mahou_shoujo_madoka_magica_magia_exedra",
+        "mahou_shoujo_madoka_magica:_walpurgis_no_kaiten"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 123
+    },
+    {
+      "character_tag": "amiya_(arknights)",
+      "post_count": 4169,
+      "recent_post_count": 1166,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.585536,
+      "copyrights": [
+        "arknights",
+        "ambience_synesthesia",
+        "arknights:_endfield",
+        "white_rabbit_candy",
+        "project_moon"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 124
+    },
+    {
+      "character_tag": "mori_calliope",
+      "post_count": 4362,
+      "recent_post_count": 1042,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.584977,
+      "copyrights": [
+        "hololive",
+        "hololive_english",
+        "hololive_indonesia",
+        "hololive_dev_is",
+        "tasty_(takanashi_kiara)"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 125
+    },
+    {
+      "character_tag": "ninomae_ina'nis",
+      "post_count": 3982,
+      "recent_post_count": 1213,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.583845,
+      "copyrights": [
+        "hololive",
+        "hololive_english",
+        "tako_takover_(ninomae_ina'nis)",
+        "sousou_no_frieren",
+        "hololive_indonesia"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 126
+    },
+    {
+      "character_tag": "tendou_akane",
+      "post_count": 2674,
+      "recent_post_count": 2123,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.583576,
+      "copyrights": [
+        "ranma_1/2",
+        "inuyasha",
+        "urusei_yatsura",
+        "mao_(takahashi_rumiko)",
+        "kyoukai_no_rinne"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 127
+    },
+    {
+      "character_tag": "aubrey_(omori)",
+      "post_count": 3921,
+      "recent_post_count": 1219,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.582995,
+      "copyrights": [
+        "omori",
+        "emori_(shrimperini)",
+        "original",
+        "pokemon",
+        "mario_(series)"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 128
+    },
+    {
+      "character_tag": "chisa_(wuthering_waves)",
+      "post_count": 2617,
+      "recent_post_count": 2142,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.582694,
+      "copyrights": [
+        "wuthering_waves",
+        "samsung",
+        "blue_archive",
+        "comiket_107",
+        "kill_la_kill"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 129
+    },
+    {
+      "character_tag": "adachi_rei",
+      "post_count": 4715,
+      "recent_post_count": 768,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.582272,
+      "copyrights": [
+        "utau",
+        "a.i._voice",
+        "vocaloid",
+        "synthesizer_v",
+        "netsu_ijou_(utau)"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 130
+    },
+    {
+      "character_tag": "oguri_cap_(umamusume)",
+      "post_count": 3354,
+      "recent_post_count": 1504,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.580826,
+      "copyrights": [
+        "umamusume",
+        "umamusume:_cinderella_gray",
+        "cygames",
+        "real_life",
+        "pokemon"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 131
+    },
+    {
+      "character_tag": "kachimachi_kosuzu",
+      "post_count": 4370,
+      "recent_post_count": 890,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.580739,
+      "copyrights": [
+        "link!_like!_love_live!",
+        "love_live!",
+        "bang_dream!",
+        "bang_dream!_it's_mygo!!!!!",
+        "hasunosora_fantasy"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 132
+    },
+    {
+      "character_tag": "kita_ikuyo",
+      "post_count": 4396,
+      "recent_post_count": 855,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.580128,
+      "copyrights": [
+        "bocchi_the_rock!",
+        "pokemon",
+        "cardcaptor_sakura",
+        "arknights",
+        "mahou_shoujo_madoka_magica"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 133
+    },
+    {
+      "character_tag": "zani_(wuthering_waves)",
+      "post_count": 4494,
+      "recent_post_count": 788,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.579667,
+      "copyrights": [
+        "wuthering_waves",
+        "pizza-la",
+        "zenless_zone_zero",
+        "umamusume",
+        "genshin_impact"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 134
+    },
+    {
+      "character_tag": "nozomi_(blue_archive)",
+      "post_count": 4114,
+      "recent_post_count": 925,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.577746,
+      "copyrights": [
+        "blue_archive",
+        "original",
+        "comiket_107",
+        "comiket_106",
+        "gintama"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 135
+    },
+    {
+      "character_tag": "reisen_udongein_inaba",
+      "post_count": 3534,
+      "recent_post_count": 1250,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.577003,
+      "copyrights": [
+        "touhou",
+        "touhou_lostword",
+        "imperishable_night",
+        "legacy_of_lunatic_kingdom",
+        "help_me_erinnnnnn!!"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 136
+    },
+    {
+      "character_tag": "denji_(chainsaw_man)",
+      "post_count": 3385,
+      "recent_post_count": 1338,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.576675,
+      "copyrights": [
+        "chainsaw_man",
+        "jujutsu_kaisen",
+        "touhou",
+        "dragon_ball",
+        "dandadan"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 137
+    },
+    {
+      "character_tag": "aotsuki_eito",
+      "post_count": 3825,
+      "recent_post_count": 1048,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.57645,
+      "copyrights": [
+        "the_hundred_line_-last_defense_academy-",
+        "danganronpa_(series)",
+        "danganronpa_2:_goodbye_despair",
+        "alice's_adventures_in_wonderland",
+        "pokemon"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 138
+    },
+    {
+      "character_tag": "raora_panthera",
+      "post_count": 4018,
+      "recent_post_count": 923,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.576125,
+      "copyrights": [
+        "hololive",
+        "hololive_english",
+        "mage_arena",
+        "hololive_indonesia",
+        "monster_hunter_(series)"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 139
+    },
+    {
+      "character_tag": "fujimaru_ritsuka_(female)",
+      "post_count": 3790,
+      "recent_post_count": 1053,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.575985,
+      "copyrights": [
+        "fate_(series)",
+        "fate/grand_order",
+        "original",
+        "fate/strange_fake",
+        "learning_with_manga!_fgo"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 140
+    },
+    {
+      "character_tag": "sumino_takumi",
+      "post_count": 3791,
+      "recent_post_count": 1042,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.575687,
+      "copyrights": [
+        "the_hundred_line_-last_defense_academy-",
+        "pokemon",
+        "danganronpa_(series)",
+        "danganronpa_2:_goodbye_despair",
+        "alice's_adventures_in_wonderland"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 141
+    },
+    {
+      "character_tag": "makima_(chainsaw_man)",
+      "post_count": 3635,
+      "recent_post_count": 1125,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.575285,
+      "copyrights": [
+        "chainsaw_man",
+        "jujutsu_kaisen",
+        "neon_genesis_evangelion",
+        "invincible_(series)",
+        "original"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 142
+    },
+    {
+      "character_tag": "sakura_miko",
+      "post_count": 4334,
+      "recent_post_count": 705,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.574886,
+      "copyrights": [
+        "hololive",
+        "hololive_english",
+        "hololive_dev_is",
+        "hololive_indonesia",
+        "pokemon"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 143
+    },
+    {
+      "character_tag": "hikari_(blue_archive)",
+      "post_count": 4068,
+      "recent_post_count": 845,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.574707,
+      "copyrights": [
+        "blue_archive",
+        "original",
+        "comiket_106",
+        "comiket_107",
+        "umamusume"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 144
+    },
+    {
+      "character_tag": "fujiwara_no_mokou",
+      "post_count": 3409,
+      "recent_post_count": 1236,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.574217,
+      "copyrights": [
+        "touhou",
+        "touhou_hero_of_ice_fairy",
+        "imperishable_night",
+        "original",
+        "help_me_erinnnnnn!!"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 145
+    },
+    {
+      "character_tag": "inkling_player_character",
+      "post_count": 4619,
+      "recent_post_count": 529,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.574056,
+      "copyrights": [
+        "splatoon_(series)",
+        "splatoon_3",
+        "pokemon",
+        "splatoon_2",
+        "splatoon_1"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 146
+    },
+    {
+      "character_tag": "ishmael_(project_moon)",
+      "post_count": 3786,
+      "recent_post_count": 984,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.573936,
+      "copyrights": [
+        "project_moon",
+        "limbus_company",
+        "arknights",
+        "lobotomy_corporation",
+        "library_of_ruina"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 147
+    },
+    {
+      "character_tag": "omori_(omori)",
+      "post_count": 3477,
+      "recent_post_count": 1171,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.573661,
+      "copyrights": [
+        "omori",
+        "yume_nikki",
+        "utdr_(toby_fox)",
+        "undertale",
+        "deltarune"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 148
+    },
+    {
+      "character_tag": "koharu_(blue_archive)",
+      "post_count": 3926,
+      "recent_post_count": 879,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.573329,
+      "copyrights": [
+        "blue_archive",
+        "jujutsu_kaisen",
+        "densetsu.exe",
+        "original",
+        "dream_pool"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 149
+    },
+    {
+      "character_tag": "shiroko_(blue_archive)",
+      "post_count": 4077,
+      "recent_post_count": 785,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.573132,
+      "copyrights": [
+        "blue_archive",
+        "kamen_rider",
+        "kamen_rider_dcd",
+        "jujutsu_kaisen",
+        "minecraft"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 150
+    },
+    {
+      "character_tag": "akemi_homura",
+      "post_count": 4091,
+      "recent_post_count": 775,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.573073,
+      "copyrights": [
+        "mahou_shoujo_madoka_magica",
+        "mahou_shoujo_madoka_magica_(anime)",
+        "mahou_shoujo_madoka_magica:_hangyaku_no_monogatari",
+        "mahou_shoujo_madoka_magica:_walpurgis_no_kaiten",
+        "mahou_shoujo_madoka_magica_magia_exedra"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 151
+    },
+    {
+      "character_tag": "plana_(blue_archive)",
+      "post_count": 3787,
+      "recent_post_count": 938,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.572634,
+      "copyrights": [
+        "blue_archive",
+        "comiket_107",
+        "pokemon",
+        "jujutsu_kaisen",
+        "kamen_rider"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 152
+    },
+    {
+      "character_tag": "castorice_(honkai:_star_rail)",
+      "post_count": 3964,
+      "recent_post_count": 804,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.571816,
+      "copyrights": [
+        "honkai:_star_rail",
+        "honkai_(series)",
+        "genshin_impact",
+        "zenless_zone_zero",
+        "mihoyo"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 153
+    },
+    {
+      "character_tag": "rice_shower_(umamusume)",
+      "post_count": 3306,
+      "recent_post_count": 1210,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.57144,
+      "copyrights": [
+        "umamusume",
+        "pacific_racing_team",
+        "real_life",
+        "project_moon",
+        "zenless_zone_zero"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 154
+    },
+    {
+      "character_tag": "baobhan_sith_(fate)",
+      "post_count": 4067,
+      "recent_post_count": 703,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.570618,
+      "copyrights": [
+        "fate/grand_order",
+        "fate_(series)",
+        "original",
+        "fate/strange_fake",
+        "pokemon"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 155
+    },
+    {
+      "character_tag": "vivian_banshee",
+      "post_count": 3694,
+      "recent_post_count": 921,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.5705,
+      "copyrights": [
+        "zenless_zone_zero",
+        "comiket_107",
+        "honkai:_star_rail",
+        "honkai_(series)",
+        "mihoyo"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 156
+    },
+    {
+      "character_tag": "monkey_d._luffy",
+      "post_count": 3636,
+      "recent_post_count": 944,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.570112,
+      "copyrights": [
+        "one_piece",
+        "one_piece_(live_action)",
+        "one_piece_card_game",
+        "one_piece_film:_gold",
+        "dragon_ball"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 157
+    },
+    {
+      "character_tag": "yugiri_tsuzuri",
+      "post_count": 4390,
+      "recent_post_count": 502,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.569915,
+      "copyrights": [
+        "link!_like!_love_live!",
+        "love_live!",
+        "love_live!_hasu_no_sora_jogakuin_school_idol_club_bloom_garden_party",
+        "love_live!_nijigasaki_high_school_idol_club",
+        "bang_dream!"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 158
+    },
+    {
+      "character_tag": "kanna_(blue_archive)",
+      "post_count": 4164,
+      "recent_post_count": 621,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.569827,
+      "copyrights": [
+        "blue_archive",
+        "comiket_107",
+        "original",
+        "resident_evil",
+        "resident_evil_2"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 159
+    },
+    {
+      "character_tag": "fuwawa_abyssgard",
+      "post_count": 3634,
+      "recent_post_count": 926,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.569559,
+      "copyrights": [
+        "hololive",
+        "hololive_english",
+        "hololive_indonesia",
+        "hololive_dev_is",
+        "comiket_107"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 160
+    },
+    {
+      "character_tag": "kel_(omori)",
+      "post_count": 3389,
+      "recent_post_count": 1049,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.568465,
+      "copyrights": [
+        "omori",
+        "undertale",
+        "utdr_(toby_fox)",
+        "pokemon",
+        "friday_night_funkin'"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 161
+    },
+    {
+      "character_tag": "kaenbyou_rin",
+      "post_count": 3220,
+      "recent_post_count": 1165,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.568405,
+      "copyrights": [
+        "touhou",
+        "subterranean_animism",
+        "touhou_lostword",
+        "foul_detective_satori",
+        "original"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 162
+    },
+    {
+      "character_tag": "kieran_(pokemon)",
+      "post_count": 4053,
+      "recent_post_count": 628,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.568239,
+      "copyrights": [
+        "pokemon",
+        "pokemon_scarlet_and_violet",
+        "pokemon_legends:_z-a",
+        "original",
+        "pokemon_masters_ex"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 163
+    },
+    {
+      "character_tag": "takanashi_kiara",
+      "post_count": 3680,
+      "recent_post_count": 822,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.56741,
+      "copyrights": [
+        "hololive",
+        "hololive_english",
+        "hololive_indonesia",
+        "ego_(takanashi_kiara)",
+        "mage_arena"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 164
+    },
+    {
+      "character_tag": "kasane_teto_(sv)",
+      "post_count": 3914,
+      "recent_post_count": 679,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.567391,
+      "copyrights": [
+        "utau",
+        "synthesizer_v",
+        "vocaloid",
+        "voicepeak",
+        "a.i._voice"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 165
+    },
+    {
+      "character_tag": "saigyouji_yuyuko",
+      "post_count": 3293,
+      "recent_post_count": 1065,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.567021,
+      "copyrights": [
+        "touhou",
+        "touhou_lostword",
+        "perfect_cherry_blossom",
+        "foul_detective_satori",
+        "imperishable_night"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 166
+    },
+    {
+      "character_tag": "herta_(honkai:_star_rail)",
+      "post_count": 3626,
+      "recent_post_count": 828,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.566603,
+      "copyrights": [
+        "honkai_(series)",
+        "honkai:_star_rail",
+        "genshin_impact",
+        "comiket_107",
+        "mihoyo"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 167
+    },
+    {
+      "character_tag": "mococo_abyssgard",
+      "post_count": 3537,
+      "recent_post_count": 882,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.566506,
+      "copyrights": [
+        "hololive",
+        "hololive_english",
+        "hololive_indonesia",
+        "hololive_dev_is",
+        "hololive_dreams"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 168
+    },
+    {
+      "character_tag": "evelyn_chevalier",
+      "post_count": 3696,
+      "recent_post_count": 754,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.565747,
+      "copyrights": [
+        "zenless_zone_zero",
+        "goddess_of_victory:_nikke",
+        "honkai_(series)",
+        "genshin_impact",
+        "mihoyo"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 169
+    },
+    {
+      "character_tag": "inubashiri_momiji",
+      "post_count": 3218,
+      "recent_post_count": 1047,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.56498,
+      "copyrights": [
+        "touhou",
+        "original",
+        "touhou_lostword",
+        "touhou_(pc-98)",
+        "cookie_(touhou)"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 170
+    },
+    {
+      "character_tag": "momoi_(blue_archive)",
+      "post_count": 3618,
+      "recent_post_count": 775,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.564937,
+      "copyrights": [
+        "blue_archive",
+        "comiket_103",
+        "jujutsu_kaisen",
+        "minecraft",
+        "slay_the_spire"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 171
+    },
+    {
+      "character_tag": "yor_briar",
+      "post_count": 3298,
+      "recent_post_count": 985,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.564827,
+      "copyrights": [
+        "spy_x_family",
+        "resident_evil",
+        "resident_evil_4",
+        "resident_evil_4_(remake)",
+        "chainsaw_man"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 172
+    },
+    {
+      "character_tag": "oma_kokichi",
+      "post_count": 4147,
+      "recent_post_count": 450,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.564653,
+      "copyrights": [
+        "danganronpa_(series)",
+        "danganronpa_v3:_killing_harmony",
+        "danganronpa_2:_goodbye_despair",
+        "danganronpa:_trigger_happy_havoc",
+        "danganronpa_another_episode:_ultra_despair_girls"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 173
+    },
+    {
+      "character_tag": "mash_kyrielight",
+      "post_count": 3326,
+      "recent_post_count": 953,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.56447,
+      "copyrights": [
+        "fate_(series)",
+        "fate/grand_order",
+        "original",
+        "nijisanji",
+        "fate/stay_night"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 174
+    },
+    {
+      "character_tag": "konpaku_youmu_(ghost)",
+      "post_count": 3075,
+      "recent_post_count": 1128,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.564293,
+      "copyrights": [
+        "touhou",
+        "touhou_lostword",
+        "perfect_cherry_blossom",
+        "imperishable_night",
+        "utau"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 175
+    },
+    {
+      "character_tag": "acheron_(honkai:_star_rail)",
+      "post_count": 3973,
+      "recent_post_count": 527,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.564022,
+      "copyrights": [
+        "honkai:_star_rail",
+        "honkai_(series)",
+        "honkai_impact_3rd",
+        "genshin_impact",
+        "mihoyo"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 176
+    },
+    {
+      "character_tag": "leon_s._kennedy",
+      "post_count": 2274,
+      "recent_post_count": 1814,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.563987,
+      "copyrights": [
+        "resident_evil",
+        "resident_evil_requiem",
+        "resident_evil_4",
+        "resident_evil_2",
+        "resident_evil_4_(remake)"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 177
+    },
+    {
+      "character_tag": "nico_robin",
+      "post_count": 3249,
+      "recent_post_count": 987,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.563894,
+      "copyrights": [
+        "one_piece",
+        "one_piece_(live_action)",
+        "one_piece_film:_red",
+        "one_piece_card_game",
+        "one_piece_film:_z"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 178
+    },
+    {
+      "character_tag": "patchouli_knowledge",
+      "post_count": 3232,
+      "recent_post_count": 999,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.56389,
+      "copyrights": [
+        "touhou",
+        "embodiment_of_scarlet_devil",
+        "marisa_of_liartop_mountain",
+        "touhou_lostword",
+        "touhou_(pc-98)"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 179
+    },
+    {
+      "character_tag": "amate_yuzuriha",
+      "post_count": 4318,
+      "recent_post_count": 325,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.563744,
+      "copyrights": [
+        "gundam",
+        "gundam_gquuuuuux",
+        "i_can_friday_by_day!",
+        "comiket_107",
+        "mobile_suit_gundam"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 180
+    },
+    {
+      "character_tag": "kasane_teto_(utau)",
+      "post_count": 3523,
+      "recent_post_count": 782,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.563376,
+      "copyrights": [
+        "utau",
+        "vocaloid",
+        "synthesizer_v",
+        "a.i._voice",
+        "voicepeak"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 181
+    },
+    {
+      "character_tag": "inkling_girl",
+      "post_count": 4043,
+      "recent_post_count": 457,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.563172,
+      "copyrights": [
+        "splatoon_(series)",
+        "splatoon_3",
+        "pokemon",
+        "splatoon_1",
+        "super_smash_bros."
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 182
+    },
+    {
+      "character_tag": "sua_(alien_stage)",
+      "post_count": 3649,
+      "recent_post_count": 680,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.562777,
+      "copyrights": [
+        "alien_stage",
+        "chainsaw_man",
+        "genshin_impact",
+        "sanrio",
+        "project_sekai"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 183
+    },
+    {
+      "character_tag": "kagamine_len",
+      "post_count": 3485,
+      "recent_post_count": 782,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.562658,
+      "copyrights": [
+        "vocaloid",
+        "project_sekai",
+        "utau",
+        "piapro_studio",
+        "ego_renegade_boy_(vocaloid)"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 184
+    },
+    {
+      "character_tag": "kiana_kaslana",
+      "post_count": 3221,
+      "recent_post_count": 957,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.56246,
+      "copyrights": [
+        "honkai_(series)",
+        "honkai_impact_3rd",
+        "honkai_gakuen",
+        "honkai:_star_rail",
+        "mihoyo"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 185
+    },
+    {
+      "character_tag": "elysia_(herrscher_of_human:_ego)_(honkai_impact)",
+      "post_count": 3486,
+      "recent_post_count": 774,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.562447,
+      "copyrights": [
+        "honkai_(series)",
+        "honkai_impact_3rd",
+        "honkai:_star_rail",
+        "mihoyo",
+        "zenless_zone_zero"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 186
+    },
+    {
+      "character_tag": "gawr_gura",
+      "post_count": 3874,
+      "recent_post_count": 513,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.56195,
+      "copyrights": [
+        "hololive",
+        "hololive_english",
+        "indie_virtual_youtuber",
+        "xenoluxe",
+        "reflect_(gawr_gura)"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 187
+    },
+    {
+      "character_tag": "takamatsu_tomori",
+      "post_count": 3681,
+      "recent_post_count": 616,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.56152,
+      "copyrights": [
+        "bang_dream!",
+        "bang_dream!_it's_mygo!!!!!",
+        "bang_dream!_girls_band_party!",
+        "link!_like!_love_live!",
+        "love_live!"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 188
+    },
+    {
+      "character_tag": "koseki_bijou",
+      "post_count": 3052,
+      "recent_post_count": 975,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.559408,
+      "copyrights": [
+        "hololive",
+        "hololive_english",
+        "hololive_indonesia",
+        "hololive_dev_is",
+        "monster_hunter_(series)"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 189
+    },
+    {
+      "character_tag": "aemeath_(wuthering_waves)",
+      "post_count": 1977,
+      "recent_post_count": 1977,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.559396,
+      "copyrights": [
+        "wuthering_waves",
+        "honkai:_star_rail",
+        "honkai_(series)",
+        "blade_runner_(series)",
+        "blade_runner_2049"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 190
+    },
+    {
+      "character_tag": "endministrator_(arknights)",
+      "post_count": 2049,
+      "recent_post_count": 1891,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.559297,
+      "copyrights": [
+        "arknights",
+        "arknights:_endfield",
+        "hololive",
+        "hololive_english",
+        "honkai:_star_rail"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 191
+    },
+    {
+      "character_tag": "mari_(omori)",
+      "post_count": 3090,
+      "recent_post_count": 929,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.558908,
+      "copyrights": [
+        "omori",
+        "utdr_(toby_fox)",
+        "pokemon",
+        "undertale",
+        "yume_nikki"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 192
+    },
+    {
+      "character_tag": "yae_miko",
+      "post_count": 3213,
+      "recent_post_count": 811,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.558109,
+      "copyrights": [
+        "genshin_impact",
+        "honkai_(series)",
+        "mihoyo",
+        "honkai:_star_rail",
+        "honkai_impact_3rd"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 193
+    },
+    {
+      "character_tag": "ijichi_nijika",
+      "post_count": 3405,
+      "recent_post_count": 671,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.557937,
+      "copyrights": [
+        "bocchi_the_rock!",
+        "vocaloid",
+        "umamusume",
+        "chainsaw_man",
+        "pokemon"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 194
+    },
+    {
+      "character_tag": "saber_(fate)",
+      "post_count": 3203,
+      "recent_post_count": 806,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.557759,
+      "copyrights": [
+        "fate_(series)",
+        "fate/stay_night",
+        "fate/grand_order",
+        "honkai_(series)",
+        "honkai:_star_rail"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 195
+    },
+    {
+      "character_tag": "mizi_(alien_stage)",
+      "post_count": 3485,
+      "recent_post_count": 611,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.557754,
+      "copyrights": [
+        "alien_stage",
+        "chainsaw_man",
+        "the_amazing_digital_circus",
+        "sanrio",
+        "real_life"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 196
+    },
+    {
+      "character_tag": "aria_(zenless_zone_zero)",
+      "post_count": 1970,
+      "recent_post_count": 1911,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.557268,
+      "copyrights": [
+        "zenless_zone_zero",
+        "sanrio",
+        "my_melody_(series)",
+        "fuwa_fuwa_cinnamoroll",
+        "hello_kitty"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 197
+    },
+    {
+      "character_tag": "sephiroth",
+      "post_count": 3476,
+      "recent_post_count": 587,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.556894,
+      "copyrights": [
+        "final_fantasy",
+        "final_fantasy_vii",
+        "final_fantasy_vii:_ever_crisis",
+        "final_fantasy_vii_remake",
+        "crisis_core:_final_fantasy_vii"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 198
+    },
+    {
+      "character_tag": "hu_tao_(genshin_impact)",
+      "post_count": 3238,
+      "recent_post_count": 748,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.556815,
+      "copyrights": [
+        "genshin_impact",
+        "mihoyo",
+        "zenless_zone_zero",
+        "honkai_(series)",
+        "honkai:_star_rail"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 199
+    },
+    {
+      "character_tag": "kris_(deltarune)",
+      "post_count": 3159,
+      "recent_post_count": 797,
+      "needs_review": false,
+      "notes": "",
+      "popularity_score": 0.556585,
+      "copyrights": [
+        "utdr_(toby_fox)",
+        "deltarune",
+        "undertale",
+        "omori",
+        "the_amazing_digital_circus"
+      ],
+      "copyright_confidence": 1.0,
+      "rank": 200
+    }
+  ]
+}

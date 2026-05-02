@@ -27,6 +27,7 @@ yarn-error.log*
 
 # Runtime data and generated outputs
 output/
+!output/exports/
 output_pg/
 backend/output/
 .local_pg/
