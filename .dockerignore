@@ -14,5 +14,4 @@ backend/output/
 .pytest_cache/
 .playwright-mcp/
 .vscode/
-%SystemDrive%/
--w
+deploy/

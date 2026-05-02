@@ -238,7 +238,7 @@ async def analyze_characters(
     top_n: int = 200,
 ) -> Dict[str, Any]:
     """基于已入库标签生成角色榜单，并落盘 JSON/CSV 交付物。"""
-    cutoff = datetime.utcnow() - timedelta(days=recent_months * 30)
+    cutoff = datetime.now(UTC) - timedelta(days=recent_months * 30)
     tag_rows = await session.execute(
         select(Tag).where(Tag.category == "character", Tag.post_count >= min_post_count)
     )
@@ -280,7 +280,7 @@ async def analyze_characters(
 
     await session.execute(delete(CharacterCopyright))
     items: List[Dict[str, Any]] = []
-    now = datetime.utcnow()
+    now = datetime.now(UTC)
     for item in top:
         tag: Tag = item["tag"]
         char_row = await session.execute(select(Character).where(Character.tag_id == tag.id))

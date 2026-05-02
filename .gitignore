@@ -39,6 +39,9 @@ backend/output/
 *.log
 logs/
 
+# Deploy scripts (remote server operations)
+deploy/
+
 # Tool caches and local IDE files
 .playwright-mcp/
 .vscode/
@@ -47,7 +50,3 @@ logs/
 # OS files
 Thumbs.db
 Desktop.ini
-
-# Stray shell artifacts
-%SystemDrive%/
--w

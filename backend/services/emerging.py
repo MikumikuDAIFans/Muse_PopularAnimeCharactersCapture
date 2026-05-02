@@ -42,7 +42,7 @@ def compute_age_days(first_seen_at, now: datetime) -> int | None:
 
 def refresh_emerging_payload_ages(payload: dict, now: datetime | None = None) -> dict:
     """对缓存导出的新兴榜按当前时间重算年龄字段。"""
-    current = now or datetime.utcnow()
+    current = now or datetime.now(UTC)
     updated = dict(payload)
     chars = []
     for item in payload.get("characters", []):
@@ -68,7 +68,7 @@ async def build_emerging_character_ranking(
     max_age_days: int = 730,
     stat_at: datetime | None = None,
 ) -> Dict[str, Any]:
-    now = stat_at or datetime.utcnow()
+    now = stat_at or datetime.now(UTC)
     # Recent-window candidate pool: all active character tags seen in recent posts.
     recent_cutoff = datetime(now.year, now.month, now.day)  # normalized for reproducibility
     from datetime import timedelta

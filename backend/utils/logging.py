@@ -2,7 +2,7 @@
 
 import logging
 import sys
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Optional
 
 
@@ -40,7 +40,7 @@ class TaskLogger:
         self._buffer_size = 50
 
     def _format_message(self, level: str, message: str) -> str:
-        ts = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+        ts = datetime.now(UTC).strftime("%Y-%m-%d %H:%M:%S")
         return f"[{ts}] [{level}] {message}"
 
     def _write(self, level: str, message: str) -> None:

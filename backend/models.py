@@ -1,6 +1,6 @@
 """SQLAlchemy ORM 模型"""
 
-from datetime import date, datetime
+from datetime import UTC, date, datetime
 from typing import Optional
 
 from sqlalchemy import (
@@ -31,9 +31,9 @@ class Project(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(255), unique=True, nullable=False)
     description: Mapped[Optional[str]] = mapped_column(Text, default=None)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(UTC))
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow
+        DateTime(timezone=True), default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC)
     )
 
     # 关联
@@ -81,13 +81,13 @@ class Task(Base):
     error_count: Mapped[int] = mapped_column(Integer, default=0)
 
     # 时间戳
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(UTC))
     started_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), default=None)
     completed_at: Mapped[Optional[datetime]] = mapped_column(
         DateTime(timezone=True), default=None
     )
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow
+        DateTime(timezone=True), default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC)
     )
 
     # 关联
@@ -137,7 +137,7 @@ class Post(Base):
 
     # 时间戳
     created_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), default=None)
-    fetched_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow)
+    fetched_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(UTC))
 
     # 文件路径
     file_path: Mapped[Optional[str]] = mapped_column(Text, default=None)
@@ -174,7 +174,7 @@ class Tag(Base):
     )
     post_count: Mapped[int] = mapped_column(Integer, default=0)
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow
+        DateTime(timezone=True), default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC)
     )
 
     # 关联
@@ -200,7 +200,7 @@ class TagAlias(Base):
     consequent_name: Mapped[str] = mapped_column(String(512), nullable=False)
     status: Mapped[str] = mapped_column(String(32), default="active")
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow
+        DateTime(timezone=True), default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC)
     )
 
     __table_args__ = (
@@ -218,7 +218,7 @@ class TagImplication(Base):
     consequent_name: Mapped[str] = mapped_column(String(512), nullable=False)
     status: Mapped[str] = mapped_column(String(32), default="active")
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow
+        DateTime(timezone=True), default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC)
     )
 
     __table_args__ = (
@@ -234,7 +234,7 @@ class SyncCheckpoint(Base):
     name: Mapped[str] = mapped_column(String(255), primary_key=True)
     checkpoint: Mapped[dict] = mapped_column(JSON, default=dict)
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow
+        DateTime(timezone=True), default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC)
     )
 
 
@@ -276,9 +276,9 @@ class Character(Base):
     lifecycle_notes: Mapped[Optional[str]] = mapped_column(Text, default=None)
 
     # 统计元数据
-    stat_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow)
+    stat_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(UTC))
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow
+        DateTime(timezone=True), default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC)
     )
 
     # 关联
@@ -302,7 +302,7 @@ class Copyright(Base):
     tag_id: Mapped[int] = mapped_column(Integer, ForeignKey("tag.id"), unique=True)
     post_count: Mapped[int] = mapped_column(Integer, default=0)
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow
+        DateTime(timezone=True), default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC)
     )
 
     # 关联
@@ -343,7 +343,7 @@ class TaskLog(Base):
     )
     message: Mapped[str] = mapped_column(Text, nullable=False)
     created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), default=datetime.utcnow
+        DateTime(timezone=True), default=lambda: datetime.now(UTC)
     )
 
     # 关联
@@ -376,9 +376,9 @@ class SyncJob(Base):
     failed_shards: Mapped[int] = mapped_column(Integer, default=0)
     started_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), default=None)
     completed_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), default=None)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(UTC))
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow
+        DateTime(timezone=True), default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC)
     )
 
     shards: Mapped[list["SyncShard"]] = relationship(
@@ -420,7 +420,7 @@ class SyncShard(Base):
     started_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), default=None)
     completed_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), default=None)
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow
+        DateTime(timezone=True), default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC)
     )
 
     job: Mapped["SyncJob"] = relationship("SyncJob", back_populates="shards")
@@ -446,7 +446,7 @@ class JobLog(Base):
     )
     message: Mapped[str] = mapped_column(Text, nullable=False)
     context: Mapped[dict] = mapped_column(JSON, default=dict)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(UTC))
 
     job: Mapped[Optional["SyncJob"]] = relationship("SyncJob", back_populates="logs")
 
@@ -469,7 +469,7 @@ class CharacterMonthlyStats(Base):
     first_post_id: Mapped[Optional[int]] = mapped_column(BigInteger, default=None)
     first_seen_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), default=None)
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow
+        DateTime(timezone=True), default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC)
     )
 
     __table_args__ = (
@@ -487,7 +487,7 @@ class CharacterMonthlyCopyright(Base):
     month_start: Mapped[date] = mapped_column(Date, primary_key=True)
     post_count: Mapped[int] = mapped_column(Integer, default=0)
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow
+        DateTime(timezone=True), default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC)
     )
 
     __table_args__ = (
@@ -507,7 +507,7 @@ class CharacterBirthCache(Base):
     source: Mapped[str] = mapped_column(String(64), default="post_history")
     notes: Mapped[Optional[str]] = mapped_column(Text, default=None)
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow
+        DateTime(timezone=True), default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC)
     )
 
 
@@ -521,7 +521,7 @@ class RankingSnapshot(Base):
     top_n: Mapped[int] = mapped_column(Integer, default=200)
     min_post_count: Mapped[int] = mapped_column(Integer, default=50)
     filters: Mapped[dict] = mapped_column(JSON, default=dict)
-    generated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow)
+    generated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(UTC))
     export_json_path: Mapped[Optional[str]] = mapped_column(Text, default=None)
     export_csv_path: Mapped[Optional[str]] = mapped_column(Text, default=None)
 
@@ -571,9 +571,9 @@ class DownloadJob(Base):
         default="pending",
     )
     params: Mapped[dict] = mapped_column(JSON, default=dict)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(UTC))
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow
+        DateTime(timezone=True), default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC)
     )
 
     items: Mapped[list["DownloadJobItem"]] = relationship(
@@ -606,7 +606,7 @@ class DownloadJobItem(Base):
     output_dir: Mapped[Optional[str]] = mapped_column(Text, default=None)
     error_message: Mapped[Optional[str]] = mapped_column(Text, default=None)
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow
+        DateTime(timezone=True), default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC)
     )
 
     job: Mapped["DownloadJob"] = relationship("DownloadJob", back_populates="items")
@@ -629,7 +629,7 @@ class SystemStats(Base):
     failed_tasks: Mapped[int] = mapped_column(Integer, default=0)
     total_download_bytes: Mapped[int] = mapped_column(BigInteger, default=0)
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow
+        DateTime(timezone=True), default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC)
     )
 
 
@@ -649,7 +649,7 @@ class DownloadLog(Base):
     file_path: Mapped[Optional[str]] = mapped_column(Text, default=None)
     error_message: Mapped[Optional[str]] = mapped_column(Text, default=None)
     created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), default=datetime.utcnow
+        DateTime(timezone=True), default=lambda: datetime.now(UTC)
     )
 
     __table_args__ = (

@@ -1,6 +1,6 @@
 """API 路由定义"""
 
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Optional, List
 import json
@@ -42,11 +42,11 @@ def _load_export_payload(path: Path):
 
 def _parse_export_datetime(value: str | None) -> datetime:
     if not value:
-        return datetime.utcnow()
+        return datetime.now(UTC)
     try:
         return datetime.fromisoformat(value)
     except Exception:
-        return datetime.utcnow()
+        return datetime.now(UTC)
 
 
 def _recent_export_path() -> Path:
@@ -64,6 +64,40 @@ def _payload_matches_recent_filters(payload: dict, n: int, recent_months: int, m
         and int(filters.get("recent_months", recent_months)) == recent_months
         and int(filters.get("min_post_count", min_count)) == min_count
     )
+
+
+def _escape_like(value: str) -> str:
+    """转义 LIKE 通配符，防止通配符注入。"""
+    return value.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
+
+
+async def _fetch_characters_with_copyrights(
+    session: AsyncSession,
+    query,
+) -> list[dict]:
+    """批量加载角色及其关联的 tag 和 copyrights，避免 N+1 查询。"""
+    query = query.options(
+        selectinload(Character.tag),
+        selectinload(Character.copyrights)
+        .selectinload(CharacterCopyright.copyright)
+        .selectinload(Copyright.tag),
+    )
+    result = await session.execute(query)
+    characters = result.scalars().unique().all()
+
+    items = []
+    for char in characters:
+        character_tag = char.tag.name if char.tag else ""
+        copyrights = []
+        for cc in char.copyrights:
+            if cc.copyright and cc.copyright.tag:
+                copyrights.append(cc.copyright.tag.name)
+        items.append({
+            "character_tag": character_tag,
+            "copyrights": copyrights,
+            "char": char,
+        })
+    return items
 
 
 # ========== 项目管理 ==========
@@ -238,23 +272,27 @@ async def start_task(
     background_tasks: BackgroundTasks,
     session: AsyncSession = Depends(get_db_session),
 ):
-    """启动任务"""
-    result = await session.execute(select(Task).where(Task.id == task_id))
+    """启动任务（原子状态转移，防止重复启动）"""
+    now = datetime.now(UTC)
+    result = await session.execute(
+        update(Task)
+        .where(Task.id == task_id, Task.status.in_(["pending", "paused", "failed"]))
+        .values(status="running", updated_at=now)
+        .returning(Task)
+    )
     task = result.scalar_one_or_none()
     if not task:
-        raise HTTPException(status_code=404, detail="任务不存在")
+        exists = await session.execute(select(Task.id).where(Task.id == task_id))
+        if not exists.scalar_one_or_none():
+            raise HTTPException(status_code=404, detail="任务不存在")
+        raise HTTPException(status_code=400, detail="任务已在运行中或状态不允许启动")
 
-    if task.status not in ("pending", "paused", "failed"):
-        raise HTTPException(status_code=400, detail=f"任务状态为 {task.status}，无法启动")
-
-    task.status = "running"
-    task.started_at = task.started_at or datetime.utcnow()
-    task.updated_at = datetime.utcnow()
-    await session.flush()
-    await session.refresh(task)
+    if not task.started_at:
+        task.started_at = now
+        await session.flush()
 
     background_tasks.add_task(run_task_background, task.id)
-
+    await session.refresh(task)
     return task
 
 
@@ -270,7 +308,7 @@ async def pause_task(task_id: int, session: AsyncSession = Depends(get_db_sessio
         raise HTTPException(status_code=400, detail="只有运行中的任务可以暂停")
 
     task.status = "paused"
-    task.updated_at = datetime.utcnow()
+    task.updated_at = datetime.now(UTC)
     await session.flush()
     await session.refresh(task)
     return task
@@ -288,8 +326,8 @@ async def stop_task(task_id: int, session: AsyncSession = Depends(get_db_session
         raise HTTPException(status_code=400, detail="任务未在运行")
 
     task.status = "cancelled"
-    task.completed_at = datetime.utcnow()
-    task.updated_at = datetime.utcnow()
+    task.completed_at = datetime.now(UTC)
+    task.updated_at = datetime.now(UTC)
     await session.flush()
     await session.refresh(task)
     return task
@@ -337,8 +375,8 @@ async def list_posts(
 
     if tag:
         # 简单标签筛选（包含匹配）
-        query = query.where(Post.tag_string.ilike(f"%{tag}%"))
-        count_query = count_query.where(Post.tag_string.ilike(f"%{tag}%"))
+        query = query.where(Post.tag_string.ilike(f"%{_escape_like(tag)}%"))
+        count_query = count_query.where(Post.tag_string.ilike(f"%{_escape_like(tag)}%"))
 
     if min_score is not None:
         query = query.where(Post.score >= min_score)
@@ -411,8 +449,8 @@ async def list_tags(
         count_query = count_query.where(Tag.category == category)
 
     if name:
-        query = query.where(Tag.name.ilike(f"%{name}%"))
-        count_query = count_query.where(Tag.name.ilike(f"%{name}%"))
+        query = query.where(Tag.name.ilike(f"%{_escape_like(name)}%"))
+        count_query = count_query.where(Tag.name.ilike(f"%{_escape_like(name)}%"))
 
     if min_count > 0:
         query = query.where(Tag.post_count >= min_count)
@@ -478,53 +516,29 @@ async def list_characters(
     query = query.order_by(Character.popularity_score.desc())
     query = query.offset((page - 1) * page_size).limit(page_size)
 
-    result = await session.execute(query)
-    characters = result.scalars().all()
+    rows = await _fetch_characters_with_copyrights(session, query)
 
-    # 填充 copyrights
-    items = []
-    for char in characters:
-        char_result = await session.execute(
-            select(Character).where(Character.id == char.id)
+    items = [
+        CharacterResponse(
+            id=row["char"].id,
+            tag_id=row["char"].tag_id,
+            character_tag=row["character_tag"],
+            total_post_count=row["char"].total_post_count,
+            recent_post_count=row["char"].recent_post_count,
+            popularity_score=row["char"].popularity_score,
+            copyrights=row["copyrights"],
+            first_seen_post_id=row["char"].first_seen_post_id,
+            first_seen_at=row["char"].first_seen_at,
+            character_age_days=row["char"].character_age_days,
+            recent_ratio=row["char"].recent_ratio,
+            growth_score=row["char"].growth_score,
+            birth_confidence=row["char"].birth_confidence,
+            lifecycle_notes=row["char"].lifecycle_notes,
+            stat_at=row["char"].stat_at,
+            updated_at=row["char"].updated_at,
         )
-        char_obj = char_result.scalar_one()
-
-        # 获取 tag 名称
-        tag_result = await session.execute(select(Tag).where(Tag.id == char.tag_id))
-        tag = tag_result.scalar_one_or_none()
-        character_tag = tag.name if tag else ""
-
-        # 获取 copyrights
-        cr_result = await session.execute(
-            select(Copyright)
-            .join(CharacterCopyright, CharacterCopyright.copyright_tag_id == Copyright.tag_id)
-            .where(CharacterCopyright.character_tag_id == char.tag_id)
-        )
-        copyrights = []
-        for cr in cr_result.scalars().all():
-            cr_tag = await session.execute(select(Tag).where(Tag.id == cr.tag_id))
-            cr_tag_obj = cr_tag.scalar_one_or_none()
-            if cr_tag_obj:
-                copyrights.append(cr_tag_obj.name)
-
-        items.append(CharacterResponse(
-            id=char.id,
-            tag_id=char.tag_id,
-            character_tag=character_tag,
-            total_post_count=char.total_post_count,
-            recent_post_count=char.recent_post_count,
-            popularity_score=char.popularity_score,
-            copyrights=copyrights,
-            first_seen_post_id=char.first_seen_post_id,
-            first_seen_at=char.first_seen_at,
-            character_age_days=char.character_age_days,
-            recent_ratio=char.recent_ratio,
-            growth_score=char.growth_score,
-            birth_confidence=char.birth_confidence,
-            lifecycle_notes=char.lifecycle_notes,
-            stat_at=char.stat_at,
-            updated_at=char.updated_at,
-        ))
+        for row in rows
+    ]
 
     return CharacterListResponse(items=items, total=total)
 
@@ -549,44 +563,28 @@ async def get_top_characters(
             filters=filters,
         )
 
-    cutoff = datetime.utcnow() - timedelta(days=recent_months * 30)
-
-    result = await session.execute(
+    query = (
         select(Character)
         .where(Character.total_post_count >= min_count)
         .order_by(Character.popularity_score.desc())
         .limit(n)
     )
-    characters = result.scalars().all()
+    rows = await _fetch_characters_with_copyrights(session, query)
 
-    items = []
-    for char in characters:
-        tag_result = await session.execute(select(Tag).where(Tag.id == char.tag_id))
-        tag = tag_result.scalar_one_or_none()
-
-        cr_result = await session.execute(
-            select(Copyright)
-            .join(CharacterCopyright, CharacterCopyright.copyright_tag_id == Copyright.tag_id)
-            .where(CharacterCopyright.character_tag_id == char.tag_id)
-        )
-        copyrights = []
-        for cr in cr_result.scalars().all():
-            cr_tag = await session.execute(select(Tag).where(Tag.id == cr.tag_id))
-            cr_tag_obj = cr_tag.scalar_one_or_none()
-            if cr_tag_obj:
-                copyrights.append(cr_tag_obj.name)
-
-        items.append({
-            "character_tag": tag.name if tag else "",
-            "copyrights": copyrights,
-            "post_count": char.total_post_count,
-            "recent_post_count": char.recent_post_count,
-            "popularity_score": round(char.popularity_score, 4),
-        })
+    items = [
+        {
+            "character_tag": row["character_tag"],
+            "copyrights": row["copyrights"],
+            "post_count": row["char"].total_post_count,
+            "recent_post_count": row["char"].recent_post_count,
+            "popularity_score": round(row["char"].popularity_score, 4),
+        }
+        for row in rows
+    ]
 
     return CharacterExportResponse(
         characters=items,
-        generated_at=datetime.utcnow(),
+        generated_at=datetime.now(UTC),
         total_count=len(items),
         filters={
             "top_n": n,
@@ -617,7 +615,7 @@ async def get_stats(session: AsyncSession = Depends(get_db_session)):
     total_tasks = sum(task_stats.values())
 
     # 最近活动（最近24小时的日志）
-    cutoff = datetime.utcnow() - timedelta(hours=24)
+    cutoff = datetime.now(UTC) - timedelta(hours=24)
     logs_result = await session.execute(
         select(TaskLog)
         .where(TaskLog.created_at >= cutoff)
@@ -684,42 +682,28 @@ async def export_characters(
             )
         return {
             "characters": characters,
-            "generated_at": payload.get("generated_at") or datetime.utcnow().isoformat(),
+            "generated_at": payload.get("generated_at") or datetime.now(UTC).isoformat(),
             "total_count": len(characters),
             "filters": filters,
         }
 
     # 复用 characters/top 逻辑
-    result = await session.execute(
+    query = (
         select(Character)
         .where(Character.total_post_count >= min_count)
         .order_by(Character.popularity_score.desc())
         .limit(n)
     )
-    characters = result.scalars().all()
+    rows = await _fetch_characters_with_copyrights(session, query)
 
-    items = []
-    for char in characters:
-        tag_result = await session.execute(select(Tag).where(Tag.id == char.tag_id))
-        tag = tag_result.scalar_one_or_none()
-
-        cr_result = await session.execute(
-            select(Copyright)
-            .join(CharacterCopyright, CharacterCopyright.copyright_tag_id == Copyright.tag_id)
-            .where(CharacterCopyright.character_tag_id == char.tag_id)
-        )
-        copyrights = []
-        for cr in cr_result.scalars().all():
-            cr_tag = await session.execute(select(Tag).where(Tag.id == cr.tag_id))
-            cr_tag_obj = cr_tag.scalar_one_or_none()
-            if cr_tag_obj:
-                copyrights.append(cr_tag_obj.name)
-
-        items.append({
-            "character_tag": tag.name if tag else "",
-            "copyrights": copyrights,
-            "post_count": char.total_post_count,
-        })
+    items = [
+        {
+            "character_tag": row["character_tag"],
+            "copyrights": row["copyrights"],
+            "post_count": row["char"].total_post_count,
+        }
+        for row in rows
+    ]
 
     if format == "csv":
         import csv
@@ -740,7 +724,7 @@ async def export_characters(
 
     return {
         "characters": items,
-        "generated_at": datetime.utcnow().isoformat(),
+        "generated_at": datetime.now(UTC).isoformat(),
         "total_count": len(items),
     }
 

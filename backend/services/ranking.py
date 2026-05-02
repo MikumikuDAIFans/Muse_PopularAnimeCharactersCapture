@@ -6,7 +6,7 @@ import csv
 import json
 import math
 from collections import Counter, defaultdict
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -28,7 +28,7 @@ from models import (
 from services.rules import RuleSet, load_rules
 
 def recent_cutoff(months: int, now: datetime | None = None) -> datetime:
-    base = now or datetime.utcnow()
+    base = now or datetime.now(UTC)
     return base - timedelta(days=months * 30)
 
 
@@ -77,7 +77,7 @@ async def build_character_ranking(
     0.7 * normalized_total_post_count + 0.3 * normalized_recent_post_count。
     """
     rules = rules or load_rules()
-    now = stat_at or datetime.utcnow()
+    now = stat_at or datetime.now(UTC)
     cutoff = recent_cutoff(recent_months, now)
     aliases = await alias_map(session)
 
@@ -194,6 +194,19 @@ async def build_character_ranking(
         if source_tag_ids.get(item["character_tag"])
     }
 
+    # Batch-fetch first-seen info for all top character tag IDs.
+    all_top_tag_ids = [tid for item in items for tid in source_tag_ids.get(item["character_tag"], [])]
+    first_seen_by_tag: Dict[int, tuple] = {}
+    if all_top_tag_ids:
+        first_seen_rows = await session.execute(
+            select(PostTag.tag_id, func.min(Post.created_at), func.min(Post.id))
+            .join(Post, Post.id == PostTag.post_id)
+            .where(PostTag.tag_id.in_(all_top_tag_ids))
+            .group_by(PostTag.tag_id)
+        )
+        for tag_id, min_created, min_post_id in first_seen_rows.all():
+            first_seen_by_tag[int(tag_id)] = (min_created, int(min_post_id) if min_post_id else None)
+
     await session.execute(delete(CharacterCopyright))
     for item in items:
         tag_row = await session.execute(select(Tag).where(Tag.name == item["character_tag"], Tag.category == "character"))
@@ -209,6 +222,11 @@ async def build_character_ranking(
         character.recent_post_count = int(item["recent_post_count"])
         character.popularity_score = float(item["popularity_score"])
         character.stat_at = now
+        # Populate first-seen info from batch query.
+        fs = first_seen_by_tag.get(tag.id)
+        if fs:
+            character.first_seen_at = fs[0]
+            character.first_seen_post_id = fs[1]
         for cr_name in item.get("copyrights") or []:
             cr_tag_row = await session.execute(select(Tag).where(Tag.name == cr_name, Tag.category == "copyright"))
             cr_tag = cr_tag_row.scalar_one_or_none()

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import asyncio
-from datetime import datetime
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -38,11 +38,11 @@ async def _load_task(session, task_id: int) -> Task:
 
 async def _mark_task(task: Task, status: str, **fields: Any) -> None:
     task.status = status
-    task.updated_at = datetime.utcnow()
+    task.updated_at = datetime.now(UTC)
     if status == "running" and not task.started_at:
-        task.started_at = datetime.utcnow()
+        task.started_at = datetime.now(UTC)
     if status in {"completed", "failed", "cancelled"}:
-        task.completed_at = datetime.utcnow()
+        task.completed_at = datetime.now(UTC)
     for key, value in fields.items():
         setattr(task, key, value)
 

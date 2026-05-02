@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -60,7 +60,7 @@ async def sync_manifest_to_db(
         shard.invalid_count = int(jsonl.get("invalid_lines") or 0)
         shard.error_count = int(worker.get("errors") or 0)
         shard.checkpoint = record.get("checkpoint") or {}
-        shard.completed_at = datetime.utcnow() if status == "completed" else None
+        shard.completed_at = datetime.now(UTC) if status == "completed" else None
 
     job.params = {
         "manifest_path": str(manifest_path) if manifest_path else None,
@@ -70,7 +70,7 @@ async def sync_manifest_to_db(
     job.completed_shards = completed
     job.failed_shards = failed
     job.status = "completed" if shards and failed == 0 else "failed"
-    job.completed_at = datetime.utcnow() if job.status == "completed" else None
+    job.completed_at = datetime.now(UTC) if job.status == "completed" else None
     session.add(
         JobLog(
             job_id=job.id,
