@@ -2,18 +2,49 @@
 
 from __future__ import annotations
 
+from datetime import date, datetime
 from typing import Any
 
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
-async def rebuild_character_monthly_aggregates(session: AsyncSession) -> dict[str, Any]:
-    """重建角色月度统计和角色-作品月度共现表。"""
+def month_start(value: date | datetime) -> date:
+    if isinstance(value, datetime):
+        value = value.date()
+    return date(value.year, value.month, 1)
+
+
+async def rebuild_character_monthly_aggregates(
+    session: AsyncSession,
+    start_date: date | datetime | None = None,
+    end_date: date | datetime | None = None,
+) -> dict[str, Any]:
+    """重建角色月度统计和角色-作品月度共现表。
+
+    When a date window is provided, only months touched by that window are
+    refreshed. This keeps the legacy full rebuild behavior while allowing the
+    weekly pipeline to avoid deleting historical aggregate rows.
+    """
     await session.flush()
 
-    await session.execute(text("delete from character_monthly_copyright"))
-    await session.execute(text("delete from character_monthly_stats"))
+    params: dict[str, Any] = {}
+    month_filter = ""
+    post_filter = "p.created_at is not null"
+    mode = "full"
+    if start_date and end_date:
+        start_month = month_start(start_date)
+        end_month = month_start(end_date)
+        params = {"start_month": start_month, "end_month": end_month}
+        month_filter = "where month_start between :start_month and :end_month"
+        post_filter = (
+            "p.created_at is not null "
+            "and date_trunc('month', p.created_at)::date between :start_month and :end_month"
+        )
+        mode = "incremental"
+
+    await session.execute(text(f"delete from character_monthly_copyright {month_filter}"), params)
+    await session.execute(text(f"delete from character_monthly_stats {month_filter}"), params)
 
     month_expr = "date_trunc('month', p.created_at)::date"
 
@@ -42,10 +73,11 @@ async def rebuild_character_monthly_aggregates(session: AsyncSession) -> dict[st
             from tag t
             join post_tag pt on pt.tag_id = t.id
             join post p on p.id = pt.post_id
-            where t.category = 'character' and p.created_at is not null
+            where t.category = 'character' and {post_filter}
             group by t.id, {month_expr}
             """
-        )
+        ),
+        params,
     )
 
     await session.execute(
@@ -72,19 +104,33 @@ async def rebuild_character_monthly_aggregates(session: AsyncSession) -> dict[st
             where
                 char_tag.category = 'character'
                 and copyright_tag.category = 'copyright'
-                and p.created_at is not null
+                and {post_filter}
             group by char_tag.id, copyright_tag.id, {month_expr}
             """
-        )
+        ),
+        params,
     )
 
     stats_count = int(
-        (await session.execute(text("select count(*) from character_monthly_stats"))).scalar() or 0
+        (
+            await session.execute(
+                text(f"select count(*) from character_monthly_stats {month_filter}"),
+                params,
+            )
+        ).scalar()
+        or 0
     )
     copyright_count = int(
-        (await session.execute(text("select count(*) from character_monthly_copyright"))).scalar() or 0
+        (
+            await session.execute(
+                text(f"select count(*) from character_monthly_copyright {month_filter}"),
+                params,
+            )
+        ).scalar()
+        or 0
     )
     return {
+        "mode": mode,
         "character_monthly_stats": stats_count,
         "character_monthly_copyright": copyright_count,
     }
