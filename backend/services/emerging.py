@@ -5,7 +5,7 @@ from __future__ import annotations
 import csv
 import json
 import math
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -15,7 +15,7 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import aliased
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from models import Character, Post, PostTag, RankingSnapshot, RankingSnapshotItem, Tag
+from models import Character, CharacterMonthlyCopyright, CharacterMonthlyStats, Post, PostTag, RankingSnapshot, RankingSnapshotItem, Tag
 
 
 def age_boost(age_days: int | None, max_age_days: int) -> float:
@@ -59,6 +59,10 @@ def refresh_emerging_payload_ages(payload: dict, now: datetime | None = None) ->
     return updated
 
 
+def cutoff_month_start(cutoff: datetime) -> date:
+    return date(cutoff.year, cutoff.month, 1)
+
+
 async def build_emerging_character_ranking(
     session: AsyncSession,
     output_root: Path,
@@ -73,15 +77,37 @@ async def build_emerging_character_ranking(
     recent_cutoff = datetime(now.year, now.month, now.day)  # normalized for reproducibility
     from datetime import timedelta
     recent_cutoff = recent_cutoff - timedelta(days=183)
-    recent_counts = (
-        select(Tag.id, Tag.name, Tag.post_count, func.count(func.distinct(PostTag.post_id)).label("recent_count"))
-        .join(PostTag, PostTag.tag_id == Tag.id)
-        .join(Post, Post.id == PostTag.post_id)
-        .where(Tag.category == "character", Post.created_at >= recent_cutoff)
-        .group_by(Tag.id)
-        .having(func.count(func.distinct(PostTag.post_id)) >= min_recent_count)
-        .subquery()
+    recent_month = cutoff_month_start(recent_cutoff)
+    aggregate_count = int(
+        (await session.execute(select(func.count()).select_from(CharacterMonthlyStats))).scalar() or 0
     )
+    use_monthly_aggregates = aggregate_count > 0
+
+    if use_monthly_aggregates:
+        recent_count_expr = func.coalesce(func.sum(CharacterMonthlyStats.post_count), 0)
+        recent_counts = (
+            select(
+                Tag.id,
+                Tag.name,
+                Tag.post_count,
+                recent_count_expr.label("recent_count"),
+            )
+            .join(CharacterMonthlyStats, CharacterMonthlyStats.character_tag_id == Tag.id)
+            .where(Tag.category == "character", CharacterMonthlyStats.month_start >= recent_month)
+            .group_by(Tag.id)
+            .having(recent_count_expr >= min_recent_count)
+            .subquery()
+        )
+    else:
+        recent_counts = (
+            select(Tag.id, Tag.name, Tag.post_count, func.count(func.distinct(PostTag.post_id)).label("recent_count"))
+            .join(PostTag, PostTag.tag_id == Tag.id)
+            .join(Post, Post.id == PostTag.post_id)
+            .where(Tag.category == "character", Post.created_at >= recent_cutoff)
+            .group_by(Tag.id)
+            .having(func.count(func.distinct(PostTag.post_id)) >= min_recent_count)
+            .subquery()
+        )
     recent_rows = await session.execute(
         select(
             recent_counts.c.id,
@@ -94,11 +120,18 @@ async def build_emerging_character_ranking(
 
     local_total_by_tag: Dict[int, int] = {}
     if candidates_raw:
-        total_rows = await session.execute(
-            select(PostTag.tag_id, func.count(func.distinct(PostTag.post_id)))
-            .join(recent_counts, recent_counts.c.id == PostTag.tag_id)
-            .group_by(PostTag.tag_id)
-        )
+        if use_monthly_aggregates:
+            total_rows = await session.execute(
+                select(CharacterMonthlyStats.character_tag_id, func.coalesce(func.sum(CharacterMonthlyStats.post_count), 0))
+                .join(recent_counts, recent_counts.c.id == CharacterMonthlyStats.character_tag_id)
+                .group_by(CharacterMonthlyStats.character_tag_id)
+            )
+        else:
+            total_rows = await session.execute(
+                select(PostTag.tag_id, func.count(func.distinct(PostTag.post_id)))
+                .join(recent_counts, recent_counts.c.id == PostTag.tag_id)
+                .group_by(PostTag.tag_id)
+            )
         local_total_by_tag = {int(row[0]): int(row[1]) for row in total_rows.all()}
 
     character_rows = await session.execute(
@@ -109,21 +142,37 @@ async def build_emerging_character_ranking(
     candidates: List[Dict[str, Any]] = []
     max_recent = max((int(row[3]) for row in candidates_raw), default=1)
     if candidates_raw:
-        char_pt = aliased(PostTag)
-        cr_pt = aliased(PostTag)
-        cr_tag = aliased(Tag)
-        cr_rows = await session.execute(
-            select(char_pt.tag_id, cr_tag.name, func.count(func.distinct(char_pt.post_id)))
-            .join(recent_counts, recent_counts.c.id == char_pt.tag_id)
-            .join(Post, Post.id == char_pt.post_id)
-            .join(cr_pt, cr_pt.post_id == char_pt.post_id)
-            .join(cr_tag, cr_tag.id == cr_pt.tag_id)
-            .where(
-                Post.created_at >= recent_cutoff,
-                cr_tag.category == "copyright",
+        if use_monthly_aggregates:
+            cr_rows = await session.execute(
+                select(
+                    CharacterMonthlyCopyright.character_tag_id,
+                    Tag.name,
+                    func.coalesce(func.sum(CharacterMonthlyCopyright.post_count), 0),
+                )
+                .join(recent_counts, recent_counts.c.id == CharacterMonthlyCopyright.character_tag_id)
+                .join(Tag, Tag.id == CharacterMonthlyCopyright.copyright_tag_id)
+                .where(
+                    CharacterMonthlyCopyright.month_start >= recent_month,
+                    Tag.category == "copyright",
+                )
+                .group_by(CharacterMonthlyCopyright.character_tag_id, Tag.id)
             )
-            .group_by(char_pt.tag_id, cr_tag.id)
-        )
+        else:
+            char_pt = aliased(PostTag)
+            cr_pt = aliased(PostTag)
+            cr_tag = aliased(Tag)
+            cr_rows = await session.execute(
+                select(char_pt.tag_id, cr_tag.name, func.count(func.distinct(char_pt.post_id)))
+                .join(recent_counts, recent_counts.c.id == char_pt.tag_id)
+                .join(Post, Post.id == char_pt.post_id)
+                .join(cr_pt, cr_pt.post_id == char_pt.post_id)
+                .join(cr_tag, cr_tag.id == cr_pt.tag_id)
+                .where(
+                    Post.created_at >= recent_cutoff,
+                    cr_tag.category == "copyright",
+                )
+                .group_by(char_pt.tag_id, cr_tag.id)
+            )
         copyright_by_tag: Dict[int, Counter] = defaultdict(Counter)
         for tag_id, cr_name, count in cr_rows.all():
             copyright_by_tag[int(tag_id)][cr_name] += int(count)
@@ -192,6 +241,7 @@ async def build_emerging_character_ranking(
             "min_post_count": min_post_count,
             "min_recent_count": min_recent_count,
             "max_age_days": max_age_days,
+            "aggregate_source": "character_monthly" if use_monthly_aggregates else "post_tag",
         },
         "characters": items,
     }

@@ -6,7 +6,7 @@ import csv
 import json
 import math
 from collections import Counter, defaultdict
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -17,6 +17,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from models import (
     Character,
     CharacterCopyright,
+    CharacterMonthlyCopyright,
+    CharacterMonthlyStats,
     Copyright,
     Post,
     PostTag,
@@ -30,6 +32,10 @@ from services.rules import RuleSet, load_rules
 def recent_cutoff(months: int, now: datetime | None = None) -> datetime:
     base = now or datetime.now(UTC)
     return base - timedelta(days=months * 30)
+
+
+def cutoff_month_start(cutoff: datetime) -> date:
+    return date(cutoff.year, cutoff.month, 1)
 
 
 async def alias_map(session: AsyncSession) -> Dict[str, str]:
@@ -79,23 +85,42 @@ async def build_character_ranking(
     rules = rules or load_rules()
     now = stat_at or datetime.now(UTC)
     cutoff = recent_cutoff(recent_months, now)
+    cutoff_month = cutoff_month_start(cutoff)
     aliases = await alias_map(session)
 
-    total_rows_result = await session.execute(
-        select(Tag.id, Tag.name, Tag.post_count, func.count(func.distinct(PostTag.post_id)))
-        .outerjoin(PostTag, PostTag.tag_id == Tag.id)
-        .where(Tag.category == "character")
-        .group_by(Tag.id)
+    aggregate_count = int(
+        (await session.execute(select(func.count()).select_from(CharacterMonthlyStats))).scalar() or 0
     )
-    total_rows = list(total_rows_result.all())
+    use_monthly_aggregates = aggregate_count > 0
 
-    recent_rows_result = await session.execute(
-        select(Tag.id, func.count(func.distinct(PostTag.post_id)))
-        .join(PostTag, PostTag.tag_id == Tag.id)
-        .join(Post, Post.id == PostTag.post_id)
-        .where(Tag.category == "character", Post.created_at >= cutoff)
-        .group_by(Tag.id)
-    )
+    if use_monthly_aggregates:
+        total_rows_result = await session.execute(
+            select(Tag.id, Tag.name, Tag.post_count, func.coalesce(func.sum(CharacterMonthlyStats.post_count), 0))
+            .outerjoin(CharacterMonthlyStats, CharacterMonthlyStats.character_tag_id == Tag.id)
+            .where(Tag.category == "character")
+            .group_by(Tag.id)
+        )
+        recent_rows_result = await session.execute(
+            select(Tag.id, func.coalesce(func.sum(CharacterMonthlyStats.post_count), 0))
+            .join(CharacterMonthlyStats, CharacterMonthlyStats.character_tag_id == Tag.id)
+            .where(Tag.category == "character", CharacterMonthlyStats.month_start >= cutoff_month)
+            .group_by(Tag.id)
+        )
+    else:
+        total_rows_result = await session.execute(
+            select(Tag.id, Tag.name, Tag.post_count, func.count(func.distinct(PostTag.post_id)))
+            .outerjoin(PostTag, PostTag.tag_id == Tag.id)
+            .where(Tag.category == "character")
+            .group_by(Tag.id)
+        )
+        recent_rows_result = await session.execute(
+            select(Tag.id, func.count(func.distinct(PostTag.post_id)))
+            .join(PostTag, PostTag.tag_id == Tag.id)
+            .join(Post, Post.id == PostTag.post_id)
+            .where(Tag.category == "character", Post.created_at >= cutoff)
+            .group_by(Tag.id)
+        )
+    total_rows = list(total_rows_result.all())
     recent_by_tag = {int(row[0]): int(row[1]) for row in recent_rows_result.all()}
 
     grouped: Dict[str, Dict[str, Any]] = {}
@@ -151,21 +176,37 @@ async def build_character_ranking(
     copyright_by_tag: Dict[int, Counter] = defaultdict(Counter)
     copyright_ref_by_tag: Dict[int, int] = defaultdict(int)
     if top_source_ids:
-        char_pt = aliased(PostTag)
-        cr_pt = aliased(PostTag)
-        cr_tag = aliased(Tag)
-        cr_rows = await session.execute(
-            select(char_pt.tag_id, cr_tag.name, func.count(func.distinct(char_pt.post_id)))
-            .join(Post, Post.id == char_pt.post_id)
-            .join(cr_pt, cr_pt.post_id == char_pt.post_id)
-            .join(cr_tag, cr_tag.id == cr_pt.tag_id)
-            .where(
-                char_pt.tag_id.in_(top_source_ids),
-                Post.created_at >= cutoff,
-                cr_tag.category == "copyright",
+        if use_monthly_aggregates:
+            cr_rows = await session.execute(
+                select(
+                    CharacterMonthlyCopyright.character_tag_id,
+                    Tag.name,
+                    func.coalesce(func.sum(CharacterMonthlyCopyright.post_count), 0),
+                )
+                .join(Tag, Tag.id == CharacterMonthlyCopyright.copyright_tag_id)
+                .where(
+                    CharacterMonthlyCopyright.character_tag_id.in_(top_source_ids),
+                    CharacterMonthlyCopyright.month_start >= cutoff_month,
+                    Tag.category == "copyright",
+                )
+                .group_by(CharacterMonthlyCopyright.character_tag_id, Tag.id)
             )
-            .group_by(char_pt.tag_id, cr_tag.id)
-        )
+        else:
+            char_pt = aliased(PostTag)
+            cr_pt = aliased(PostTag)
+            cr_tag = aliased(Tag)
+            cr_rows = await session.execute(
+                select(char_pt.tag_id, cr_tag.name, func.count(func.distinct(char_pt.post_id)))
+                .join(Post, Post.id == char_pt.post_id)
+                .join(cr_pt, cr_pt.post_id == char_pt.post_id)
+                .join(cr_tag, cr_tag.id == cr_pt.tag_id)
+                .where(
+                    char_pt.tag_id.in_(top_source_ids),
+                    Post.created_at >= cutoff,
+                    cr_tag.category == "copyright",
+                )
+                .group_by(char_pt.tag_id, cr_tag.id)
+            )
         for tag_id, cr_name, count in cr_rows.all():
             copyright_by_tag[int(tag_id)][cr_name] += int(count)
             copyright_ref_by_tag[int(tag_id)] += int(count)
@@ -255,6 +296,7 @@ async def build_character_ranking(
             "min_post_count": min_post_count,
             "require_recent": require_recent,
             "recent_window_start": cutoff.date().isoformat(),
+            "aggregate_source": "character_monthly" if use_monthly_aggregates else "post_tag",
         },
         "characters": items,
     }

@@ -6,7 +6,7 @@ from sqlalchemy import func, select
 
 from config import get_settings
 from database import Base, get_async_engine, close_db
-from models import Character, RankingSnapshot, RankingSnapshotItem, Post, PostTag, Tag
+from models import Character, CharacterMonthlyStats, RankingSnapshot, RankingSnapshotItem, Post, PostTag, Tag
 from services.aggregation import rebuild_character_monthly_aggregates
 from services.emerging import build_emerging_character_ranking
 from services.ranking import build_character_ranking
@@ -42,6 +42,7 @@ async def test_ranking_exports_rank_and_required_fields(pg_database_url, tmp_pat
             PostTag(post_id=1, tag_id=cr.id),
             PostTag(post_id=1, tag_id=general.id),
         ])
+        await rebuild_character_monthly_aggregates(session)
         result = await build_character_ranking(session, tmp_path, min_post_count=1, top_n=10)
         await session.commit()
         snapshot_count = (
@@ -56,6 +57,7 @@ async def test_ranking_exports_rank_and_required_fields(pg_database_url, tmp_pat
     assert item["rank"] == 1
     assert item["character_tag"] == "hatsune_miku"
     assert item["copyrights"] == ["vocaloid"]
+    assert result["filters"]["aggregate_source"] == "character_monthly"
     assert Path(result["json_path"]).exists()
     assert Path(result["csv_path"]).exists()
     assert Path(result["json_path"]).name == "character_list_recent_6m_top_10.json"
@@ -140,6 +142,7 @@ async def test_emerging_ranking_uses_database_backed_recent_candidates(pg_databa
                 birth_confidence=1.0,
             ),
         ])
+        await rebuild_character_monthly_aggregates(session)
 
         result = await build_emerging_character_ranking(
             session,
@@ -159,6 +162,7 @@ async def test_emerging_ranking_uses_database_backed_recent_candidates(pg_databa
     assert result["total_count"] == 1
     assert result["characters"][0]["character_tag"] == "fresh_character"
     assert result["characters"][0]["copyrights"] == ["fresh_series"]
+    assert result["filters"]["aggregate_source"] == "character_monthly"
     assert snapshot_count == 1
     assert snapshot_item_count == 1
     await close_db()
@@ -196,7 +200,55 @@ async def test_rebuild_character_monthly_aggregates(pg_database_url):
         await session.commit()
 
     assert stats == {
+        "mode": "full",
         "character_monthly_stats": 1,
         "character_monthly_copyright": 1,
     }
+    await close_db()
+
+
+@pytest.mark.asyncio
+async def test_rebuild_character_monthly_aggregates_can_refresh_date_window(pg_database_url):
+    get_settings.cache_clear()
+    await close_db()
+    engine = await get_async_engine()
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+
+    from database import get_session_factory
+    factory = await get_session_factory()
+    async with factory() as session:
+        char = Tag(name="window_character", category="character", post_count=2)
+        cr = Tag(name="window_series", category="copyright", post_count=2)
+        session.add_all([char, cr])
+        await session.flush()
+        jan = Post(id=810, tag_string="window_character window_series", created_at=datetime(2026, 1, 5))
+        feb = Post(id=820, tag_string="window_character window_series", created_at=datetime(2026, 2, 5))
+        session.add_all([jan, feb])
+        await session.flush()
+        session.add_all([
+            PostTag(post_id=jan.id, tag_id=char.id),
+            PostTag(post_id=jan.id, tag_id=cr.id),
+            PostTag(post_id=feb.id, tag_id=char.id),
+            PostTag(post_id=feb.id, tag_id=cr.id),
+        ])
+        full_stats = await rebuild_character_monthly_aggregates(session)
+        feb_stats = await rebuild_character_monthly_aggregates(
+            session,
+            datetime(2026, 2, 1),
+            datetime(2026, 2, 28),
+        )
+        total_month_rows = (
+            await session.execute(select(func.count()).select_from(CharacterMonthlyStats))
+        ).scalar_one()
+        await session.commit()
+
+    assert full_stats["mode"] == "full"
+    assert full_stats["character_monthly_stats"] == 2
+    assert feb_stats == {
+        "mode": "incremental",
+        "character_monthly_stats": 1,
+        "character_monthly_copyright": 1,
+    }
+    assert total_month_rows == 2
     await close_db()
